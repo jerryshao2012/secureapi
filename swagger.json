@@ -1,0 +1,266 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.1.0",
+    "title": "Secure API",
+    "description": "Secure API"
+  },
+  "host": "localhost:6001",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "Secure",
+      "description": "API for Authentication & Authorization"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "List all users",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List all users"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Authenticate"
+        ],
+        "description": "Authenticate a user",
+        "parameters": [
+          {
+            "name": "Sign In",
+            "in": "body",
+            "description": "Sign in form",
+            "schema": {
+              "$ref": "#/definitions/SignIn"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticate user"
+          }
+        }
+      }
+    },
+    "/enroll": {
+      "post": {
+        "tags": [
+          "Authenticate"
+        ],
+        "description": "Enroll a user",
+        "parameters": [
+          {
+            "name": "Enroll",
+            "in": "body",
+            "description": "Enroll form",
+            "schema": {
+              "$ref": "#/definitions/EnrollUser"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Enroll user"
+          }
+        }
+      }
+    },
+    "/reenroll": {
+      "post": {
+        "tags": [
+          "Authenticate"
+        ],
+        "description": "Reenroll a user",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "type": "string",
+            "description": "Email address"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Reenroll user"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "description": "Get a User",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "userName",
+            "description": "User name for get",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get user successfully"
+          }
+        }
+      },
+      "post": {
+        "description": "Create a User (for admin only. Normal user should go through enrollment process)",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "Create User form",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User created successfully"
+          }
+        }
+      },
+      "put": {
+        "description": "Update a User",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "Update User form",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a User",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "userName",
+            "description": "User name for delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SignIn": {
+      "required": [
+        "userName",
+        "password"
+      ],
+      "properties": {
+        "userName": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "EnrollUser": {
+      "required": [
+        "userName",
+        "email"
+      ],
+      "properties": {
+        "userName": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "userName",
+        "password",
+        "email",
+        "disabled"
+      ],
+      "properties": {
+        "userName": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "password": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "scope": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

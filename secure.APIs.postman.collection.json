@@ -1,0 +1,375 @@
+{
+	"info": {
+		"_postman_id": "31569cf5-1c0c-4885-adde-ad8cb4ee4a39",
+		"name": "Secure APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "Test User",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logoff",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUZXN0IFVzZXIiLCJzY29wZSI6ImFkbWluIiwiaWF0IjoxNTIyODczMjUzLCJleHAiOjE1MjI5NTk2NTMsImlzcyI6Imh5YnJpZC5hcHAifQ.rTNU6oqITBg0fiV4ket_4JP1X9_KqzbCYvkpomBWouEytW-aAYxTHT1Q7z4CGuCilAVx_j4lSldMu6iZOndIn-IY3drKCSOqc6S2BgPnFRwNGZSXlyCQBO-2yJ8GkH7x6fyRmYPzounRk4dYJ77Oms8LGYL_zu6fnO1-kVd4D-U"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/logoff",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"logoff"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Cert",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/publicKey",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"publicKey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUZXN0IFVzZXIiLCJzY29wZSI6ImFkbWluIiwiaWF0IjoxNTIyODczMjUzLCJleHAiOjE1MjI5NTk2NTMsImlzcyI6Imh5YnJpZC5hcHAifQ.rTNU6oqITBg0fiV4ket_4JP1X9_KqzbCYvkpomBWouEytW-aAYxTHT1Q7z4CGuCilAVx_j4lSldMu6iZOndIn-IY3drKCSOqc6S2BgPnFRwNGZSXlyCQBO-2yJ8GkH7x6fyRmYPzounRk4dYJ77Oms8LGYL_zu6fnO1-kVd4D-U"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUZXN0IFVzZXIiLCJzY29wZSI6ImFkbWluIiwiaWF0IjoxNTIyODczMjUzLCJleHAiOjE1MjI5NTk2NTMsImlzcyI6Imh5YnJpZC5hcHAifQ.rTNU6oqITBg0fiV4ket_4JP1X9_KqzbCYvkpomBWouEytW-aAYxTHT1Q7z4CGuCilAVx_j4lSldMu6iZOndIn-IY3drKCSOqc6S2BgPnFRwNGZSXlyCQBO-2yJ8GkH7x6fyRmYPzounRk4dYJ77Oms8LGYL_zu6fnO1-kVd4D-U"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "Test User 1",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "scope",
+							"value": "manager",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "email",
+							"value": "test.user.1@gmail.com",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enroll a User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "Test User 2",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "email",
+							"value": "jerry.shao@gmail.com",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/enroll",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"enroll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comfirm Enroll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/email-verification/qxQSfylaw57Xz3OnSmNJKWj5TfEiVQQPqpsoLn3EDxyAEQy4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"email-verification",
+						"qxQSfylaw57Xz3OnSmNJKWj5TfEiVQQPqpsoLn3EDxyAEQy4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a User",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUZXN0IFVzZXIiLCJzY29wZSI6ImFkbWluIiwiaWF0IjoxNTIyODczMjUzLCJleHAiOjE1MjI5NTk2NTMsImlzcyI6Imh5YnJpZC5hcHAifQ.rTNU6oqITBg0fiV4ket_4JP1X9_KqzbCYvkpomBWouEytW-aAYxTHT1Q7z4CGuCilAVx_j4lSldMu6iZOndIn-IY3drKCSOqc6S2BgPnFRwNGZSXlyCQBO-2yJ8GkH7x6fyRmYPzounRk4dYJ77Oms8LGYL_zu6fnO1-kVd4D-U"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "Test User 1",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "scope",
+							"value": "manager,sales",
+							"type": "text",
+							"description": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove a User",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUZXN0IFVzZXIiLCJzY29wZSI6ImFkbWluIiwiaWF0IjoxNTIyODczMjUzLCJleHAiOjE1MjI5NTk2NTMsImlzcyI6Imh5YnJpZC5hcHAifQ.rTNU6oqITBg0fiV4ket_4JP1X9_KqzbCYvkpomBWouEytW-aAYxTHT1Q7z4CGuCilAVx_j4lSldMu6iZOndIn-IY3drKCSOqc6S2BgPnFRwNGZSXlyCQBO-2yJ8GkH7x6fyRmYPzounRk4dYJ77Oms8LGYL_zu6fnO1-kVd4D-U"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "Test User 1",
+							"type": "text",
+							"description": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUZXN0IFVzZXIiLCJzY29wZSI6ImFkbWluIiwiaWF0IjoxNTIyODczMjUzLCJleHAiOjE1MjI5NTk2NTMsImlzcyI6Imh5YnJpZC5hcHAifQ.rTNU6oqITBg0fiV4ket_4JP1X9_KqzbCYvkpomBWouEytW-aAYxTHT1Q7z4CGuCilAVx_j4lSldMu6iZOndIn-IY3drKCSOqc6S2BgPnFRwNGZSXlyCQBO-2yJ8GkH7x6fyRmYPzounRk4dYJ77Oms8LGYL_zu6fnO1-kVd4D-U"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:6002/api/v1/user/Test User 1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6002",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"Test User 1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

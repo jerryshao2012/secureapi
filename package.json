@@ -1,0 +1,41 @@
+{
+  "name": "AwesomeProjectSecureAPIs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Secure API for Awesome Project",
+  "main": "www",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha",
+    "start": "node ./bin/www"
+  },
+  "keywords": [
+    "jwks-rsa",
+    "express",
+    "secure",
+    "api"
+  ],
+  "dependencies": {
+    "assert": "^1.4.1",
+    "body-parser": "^1.18.2",
+    "cfenv": "^1.0.4",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "email-verification": "^0.4.6",
+    "express": "^4.16.3",
+    "http-errors": "~1.6.2",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^8.2.0",
+    "mongoose": "^5.0.12",
+    "morgan": "^1.9.0",
+    "node-cron": "^1.2.1",
+    "rsa-json": "^0.2.1",
+    "swagger-ui-express": "^3.0.6",
+    "underscore": "^1.8.3",
+    "winston": "^2.4.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "mocha": "^5.0.5"
+  }
+}

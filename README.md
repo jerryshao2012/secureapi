@@ -85,4 +85,5 @@ logFormat: "dev",
 
 ````
 ## TODO
-Make test cases' dependency more clean. 
+- Convert into ESX/Ecma6 without Transpiler (Babel etc.)
+- Make test cases' dependency more clean. 

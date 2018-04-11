@@ -5,7 +5,7 @@ The secure api library provides a set of security APIs for enrollment, authentic
 
 ### `node bin/www`
 
-Start secure API services. An default admin account will be created if it is not exit.
+Start secure API services. An default admin account will be created if it is not existing.
 
 Protected APIs need to be accessed through authenticated token in bearer header. Check postman collection for sample requests.
 
@@ -84,6 +84,22 @@ Log level and format is defined in root/config.js.
 logFormat: "dev",
 
 ````
+## References
+* [Underscore](http://underscorejs.org) a library that provides a whole mess of useful functional programming helpers without extending any built-in objects.
+* [Express](https://expressjs.com) fast, unopinionated, minimalist web framework for Node.js
+* [JSON Web Tokens](https://github.com/auth0/node-jsonwebtoken) an implementation of JSON Web Tokens
+* [mongoose](http://mongoosejs.com) elegant mongodb object modeling for node.js 
+* [Node Email Verification](https://github.com/whitef0x0/node-email-verification) verify user signup over email with NodeJS and MongoDB
+* [rsa-json](https://github.com/substack/rsa-json) generate RSA keypairs as json blobs
+* [Swagger UI Express](https://www.npmjs.com/package/swagger-ui-express) adds middleware to your express app to serve the Swagger UI bound to your Swagger document. This acts as living documentation for your API hosted from within your app
+* [cfenv](https://github.com/cloudfoundry-community/node-cfenv) easy access to your Cloud Foundry application environment
+* [node-cron](https://github.com/kelektiv/node-cron) tiny task scheduler in pure JavaScript for node.js based on GNU crontab. This module allows you to schedule task in node.js using full crontab syntax.
+* [morgan](https://github.com/expressjs/morgan) HTTP request logger middleware for node.js
+* [winston](https://github.com/winstonjs/winston) a logger for just about everything
+* [Mocha](https://mochajs.org) a feature-rich JavaScript test framework running on Node.js and in the browser, making asynchronous testing simple and fun. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught exceptions to the correct test cases.
+* [Chai](http://www.chaijs.com) a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework
+* [Chai HTTP](https://github.com/chaijs/chai-http) HTTP integration testing with Chai assertions
+
 ## TODO
 - Convert into ESX/Ecma6 without Transpiler (Babel etc.)
-- Make test cases' dependency more clean. 
+- Make test cases' dependency more clean

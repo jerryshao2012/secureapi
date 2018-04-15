@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 // RSA key generation
-const createKeys = require('rsa-json');
+import createKeys from 'rsa-json';
 // Add swagger
-const swaggerUi = require('swagger-ui-express'),
-    swaggerDocument = require('../swagger.json');
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger.json';
 
 /* GET generate RSA keypair */
 router.get('/keyPair', function (req, res) {
@@ -16,4 +16,5 @@ router.get('/keyPair', function (req, res) {
 /* GET swagger */
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-module.exports = router;
+//module.exports = router;
+export default router;

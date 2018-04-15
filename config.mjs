@@ -1,7 +1,7 @@
 // Crypto library
-const crypto = require('crypto');
+import crypto from 'crypto';
 // Provides access to your Cloud Foundry environment for more info, see: https://www.npmjs.com/package/cfenv
-const cfenv = require('cfenv');
+import cfenv from 'cfenv';
 // Get the app environment from Cloud Foundry
 const appEnv = cfenv.getAppEnv();
 // Get port from environment and store in Express.
@@ -51,7 +51,7 @@ function normalizePort(val) {
     return false;
 }
 
-module.exports = {
+export default {
     // Secret for hash
     secret: secret,
     // Database URL
@@ -76,7 +76,7 @@ module.exports = {
             service: "Gmail",
             auth: {
                 user: "awesomeapp.api@gmail.com",
-                pass: "*********"
+                pass: "******"
             }
         },
 
@@ -109,3 +109,5 @@ module.exports = {
     port: port,
     hash: hashData
 };
+
+//export default config;

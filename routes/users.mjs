@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const User = require('../app/models/user');
+import * as User from '../app/models/user';
 
 /* GET users listing. */
 router.get('/', function (req, res) {
@@ -10,4 +10,5 @@ router.get('/', function (req, res) {
     }).select('-_id -password -__v');
 });
 
-module.exports = router;
+//module.exports = router;
+export default router;

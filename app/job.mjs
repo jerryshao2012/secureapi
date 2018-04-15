@@ -1,14 +1,14 @@
-const _ = require('underscore');
+import _ from 'underscore';
 // Used to create, sign, and verify tokens
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 // Task scheduler library
-const cron = require('node-cron');
+import cron from 'node-cron';
 
 // Get our config file
-const config = require('../config');
+import * as myconfig from '../config';
 
 // Get our mongoose model
-const Session = require('../app/models/session');
+import * as mySession from '../app/models/session';
 
 // Corm job to remove session every 2 hours
 // https://www.npmjs.com/package/node-cron
@@ -17,22 +17,22 @@ cron.schedule('0 */2 * * *', function () {
     console.log(new Date() + ': running a clean session task');
 
     var createdAt = new Date(Date.now() - 1000 * 60 * 60);
-    Session.count({createdAt: {"$lt": createdAt}}, function (err, count) {
+    mySession.count({createdAt: {"$lt": createdAt}}, function (err, count) {
         console.log("Number of session(s) to verify & clean up: ", count);
 
         if (count > 0) {
             const pageSize = 100;
             const totalPage = count / pageSize + (count % pageSize > 0 ? 1 : 0);
             for (var pageNumber = 1; pageNumber <= totalPage; pageNumber++) {
-                Session.find({}, null, {}).skip((pageNumber - 1) * pageSize).limit(pageSize)
+                mySession.find({}, null, {}).skip((pageNumber - 1) * pageSize).limit(pageSize)
                     .exec(function (err, sessions) {
                         if (!err) {
                             _.each(sessions, function (session) {
                                 console.log("Check session token: " + session.token);
-                                jwt.verify(session.token, config.jwt.publicKey, function (err) {
+                                jwt.verify(session.token, myconfig.jwt.publicKey, function (err) {
                                     // Only clean expired token
                                     if (err && err.name === 'TokenExpiredError') {
-                                        Session.findOneAndRemove({
+                                        mySession.findOneAndRemove({
                                             token: session.token
                                         }, {}, function (err) {
                                             if (err) {
@@ -56,4 +56,5 @@ cron.schedule('0 */2 * * *', function () {
     console.log("Removed: " + count);
 });*/
 
-module.exports = {};
+//module.exports = {};
+export default {};

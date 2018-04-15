@@ -1,21 +1,24 @@
-const _ = require('underscore');
-const express = require('express');
+import _ from 'underscore';
+import express from 'express';
 const apiRoutes = express.Router();
 // Used to create, sign, and verify tokens
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 // Interact with our MongoDB database
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import email from 'email-verification';
+//const nev = require('email-verification')(mongoose);
+
 // Enrollment library
-const nev = require('email-verification')(mongoose);
+const nev = email (mongoose);
 
 // Crypto library
 //const crypto = require('crypto');
 // Get our config file
-const config = require('../config');
+import config from '../config';
 
 // Get our mongoose model
-const User = require('../app/models/user');
-const Session = require('../app/models/session');
+import * as User from '../app/models/user';
+import * as Session from '../app/models/session';
 
 // Route to show a random message (GET http://localhost:8080/api/)
 apiRoutes.get('/', function (req, res) {
@@ -349,4 +352,5 @@ nev.generateTempUserModel(User, function (err, tempUserModel) {
     console.log('generated temp user model: ' + (typeof tempUserModel === 'function'));
 });
 
-module.exports = apiRoutes;
+export default apiRoutes;
+//module.exports = apiRoutes;

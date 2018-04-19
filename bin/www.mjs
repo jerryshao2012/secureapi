@@ -6,7 +6,9 @@
 // Provides access to your Cloud Foundry environment for more info, see: https://www.npmjs.com/package/cfenv
 import cfenv from 'cfenv';
 import app from '../app';
-const debug = require('debug')('secureapis:server');
+import _debug from 'debug';
+//import secureapis from 'secureapis:server';
+//const debug = _debug (secureapis);
 import http from 'http';
 
 // Get the app environment from Cloud Foundry
@@ -65,7 +67,7 @@ function onListening() {
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+    //debug('Listening on ' + bind);
     // print a message when the server starts listening
     console.log("Server starting on " + appEnv.url);
 }

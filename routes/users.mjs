@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-import * as User from '../app/models/user';
+import User from '../app/models/user';
 
 /* GET users listing. */
 router.get('/', function (req, res) {

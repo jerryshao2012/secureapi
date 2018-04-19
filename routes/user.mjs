@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 // Get our config file
-import * as config from '../config';
+import config from '../config';
 
-import * as User from '../app/models/user';
+import User from '../app/models/user';
 
 /* Create a user. */
 router.post('/', function (req, res) {

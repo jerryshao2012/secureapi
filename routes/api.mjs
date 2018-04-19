@@ -17,8 +17,9 @@ const nev = email (mongoose);
 import config from '../config';
 
 // Get our mongoose model
-import * as User from '../app/models/user';
-import * as Session from '../app/models/session';
+import User from '../app/models/user';
+import Session from '../app/models/session';
+
 
 // Route to show a random message (GET http://localhost:8080/api/)
 apiRoutes.get('/', function (req, res) {

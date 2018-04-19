@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 // Get our config file
-import * as config from '../../config';
+import config from '../../config';
 
 // set up a mongoose model and pass it using module.exports
 var userSchema = new Schema({
@@ -18,6 +18,5 @@ userSchema.methods.validPassword = function (pwd) {
     if (!pwd) return false;
     return config.hash(pwd) === this.password;
 };
-
 //module.exports = mongoose.model('User', userSchema);
 export default mongoose.model('User', userSchema);

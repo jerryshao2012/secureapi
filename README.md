@@ -111,9 +111,9 @@ Note: contains reference implementation for password recovery / sign up / rememb
 * [Chai](http://www.chaijs.com) a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework
 * [Chai HTTP](https://github.com/chaijs/chai-http) HTTP integration testing with Chai assertions
 * [express-session](https://github.com/expressjs/session) Express session middleware
-* (connect-mongodb-session)[https://github.com/mongodb-js/connect-mongodb-session] Use to store express web sessions in MongoDB
-* (Nodemailer)[https://github.com/nodemailer/nodemailer] Send e-mails with Node.JS
-* (nodemailer-express-handlebars)[https://www.npmjs.com/package/nodemailer-express-handlebars] Express Handlebars plugin for Nodemailer
+* [connect-mongodb-session](https://github.com/mongodb-js/connect-mongodb-session) Use to store express web sessions in MongoDB
+* [Nodemailer](https://github.com/nodemailer/nodemailer) Send e-mails with Node.JS
+* [nodemailer-express-handlebars](https://www.npmjs.com/package/nodemailer-express-handlebars) Express Handlebars plugin for Nodemailer
 
 ## TODO
 - Convert into ESX/Ecma6 without Transpiler (Babel etc.)

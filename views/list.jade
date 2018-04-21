@@ -1,0 +1,39 @@
+extends layout
+
+block content
+	nav.navbar.navbar-default.navbar-fixed-top
+		.container
+			.navbar-header
+				.navbar-brand User List
+			ul.nav.navbar-nav.navbar-right
+				li
+					.navbar-btn#btn-logout.btn.btn-default
+						| Sign Out
+
+	div.container(style='margin-top:20px').center-vertical
+		table.table.table-bordered.table-striped
+			thead
+				tr
+					th(style='width:40px') #
+					th(style='width:180px') User Name
+					th(style='width:200px') Email
+					th Created
+					th Updated
+			tbody
+			- for (var i = 0; i < users.length; i++)
+				tr
+					td= i + 1
+					td= users[i].userName
+					td= users[i].email
+					td= users[i].createdAt
+					td= users[i].updatedAt
+
+	include modals/alert
+	include modals/confirm
+
+block scripts
+	script(src='/javascripts/jquery-2.2.3.min.js')
+	script(src='/javascripts/jquery.form.min.js')
+	script(src='/javascripts/bootstrap.min.js')
+	script(src='/javascripts/views/list.js')
+	script(src='/javascripts/controllers/listController.js')

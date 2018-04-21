@@ -204,7 +204,7 @@
 						},
 						{
 							"key": "email",
-							"value": "some.test@gmail.com",
+							"value": "your.email@gmail.com",
 							"type": "text",
 							"description": ""
 						},

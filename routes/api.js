@@ -3,10 +3,8 @@ const express = require('express');
 const apiRoutes = express.Router();
 // Used to create, sign, and verify tokens
 const jwt = require('jsonwebtoken');
-// Interact with our MongoDB database
-const mongoose = require('mongoose');
-// Enrollment library
-const nev = require('email-verification')(mongoose);
+// Enrollment api
+const enroll = require('../app/enroll');
 
 // Crypto library
 //const crypto = require('crypto');
@@ -83,7 +81,7 @@ apiRoutes.post('/login', function (req, res) {
 
                     // Create a session
                     session.save(function (err) {
-                        if (err) return res.json({success: false, error: err["errmsg"]});
+                        if (err) return res.status(400).json({success: false, error: err["errmsg"]});
                         console.log('Session created successfully');
 
                         // Return the information including token as JSON
@@ -110,10 +108,10 @@ apiRoutes.post('/enroll', function (req, res) {
         var newTempUser = new User({
             userName: userName,
             email: email,
-            password: config.hash(password),
-            disabled: true
+            password: password,
+            disabled: false
         });
-        nev.createTempUser(newTempUser, function (err, existingPersistentUser, newTempUser) {
+        enroll.createTempUser(newTempUser, function (err, existingPersistentUser, newTempUser) {
             if (err) {
                 return res.status(404).json({success: false, error: "Creating temp user FAILED"});
             }
@@ -128,9 +126,9 @@ apiRoutes.post('/enroll', function (req, res) {
 
             // New user created
             if (newTempUser) {
-                var URL = newTempUser[nev.options.URLFieldName];
+                var URL = newTempUser[enroll.options.URLFieldName];
 
-                nev.sendVerificationEmail(email, URL, function (err, info) {
+                enroll.sendVerificationEmail(email, URL, function (err, info) {
                     if (err) {
                         return res.status(404).json({success: false, error: "Sending verification email FAILED"});
                     }
@@ -144,7 +142,7 @@ apiRoutes.post('/enroll', function (req, res) {
 
                 // User already exists in temporary collection!
             } else {
-                res.json({
+                res.status(400).json({
                     success: false,
                     error: 'You have already signed up. Please check your email to verify your account.'
                 });
@@ -156,7 +154,7 @@ apiRoutes.post('/enroll', function (req, res) {
 });
 apiRoutes.post('/reenroll', function (req, res) {
     var email = req.body.email;
-    nev.resendVerificationEmail(email, function (err, userFound) {
+    enroll.resendVerificationEmail(email, function (err, userFound) {
         if (err) {
             return res.status(404).json({success: false, error: "Resending verification email FAILED"});
         }
@@ -166,7 +164,7 @@ apiRoutes.post('/reenroll', function (req, res) {
                 message: 'An email has been sent to you, yet again. Please check it to verify your account.'
             });
         } else {
-            res.json({
+            res.status(400).json({
                 success: false,
                 error: 'Your verification code has expired. Please sign up again.'
             });
@@ -177,9 +175,9 @@ apiRoutes.post('/reenroll', function (req, res) {
 apiRoutes.get('/email-verification/:URL', function (req, res) {
     var url = req.params.URL;
 
-    nev.confirmTempUser(url, function (err, user) {
+    enroll.confirmTempUser(url, function (err, user) {
         if (user) {
-            nev.sendConfirmationEmail(user.email, function (err, info) {
+            enroll.sendConfirmationEmail(user.email, function (err, info) {
                 if (err) {
                     return res.status(404).json({success: false, error: "Sending confirmation email FAILED"});
                 }
@@ -221,6 +219,7 @@ var restrictSession = {};
 
 // Route middleware to verify a token
 apiRoutes.use(function (req, res, next) {
+    var length = config.authentication.apiLevels.length;
     function arrayContains(array, item) {
         if (Array.isArray(array) && typeof item === 'string') {
             // For URL contains
@@ -241,14 +240,15 @@ apiRoutes.use(function (req, res, next) {
         return false;
     }
 
-    _.some(config.authentication.levels, function (level, index) {
-        if (arrayContains(config.authentication[level].urls, req.originalUrl)) {
+    _.some(config.authentication.apiLevels, function (level, index) {
+        var configAuthenticationLevel = config.authentication[level];
+        if (arrayContains(configAuthenticationLevel.urls, req.originalUrl)) {
             if (restrictSession[req.headers.authorization]) {
                 // Access granted
                 next();
                 return true;
             }
-            if (config.authentication[level].through === 'basic') {
+            if (configAuthenticationLevel.through === 'basic') {
                 // Basic authentication
                 const b64Auth = (req.headers.authorization || '').split(' ')[1] || '';
                 if (b64Auth !== '') {
@@ -283,7 +283,7 @@ apiRoutes.use(function (req, res, next) {
                 // Custom message
                 res.status(401).send('Authentication required.');
                 return true;
-            } else if (config.authentication[level].through === 'jwt') {
+            } else if (configAuthenticationLevel.through === 'jwt') {
                 // Check header or url parameters or post parameters for token
                 var token = req.body.token || req.query.token || req.headers.authorization;
 
@@ -306,7 +306,7 @@ apiRoutes.use(function (req, res, next) {
                                         decoded.scope ? decoded.scope.split(',') : [])) {
                                     return res.status(401).json({success: false, error: 'Invalid token'});
                                 } else {
-                                    // If everything is goo`d, save to request for use in other routes
+                                    // If everything is good, save to request for use in other routes
                                     req.decoded = decoded;
                                     // Access granted. authLevel = 2
                                     return next();
@@ -316,37 +316,18 @@ apiRoutes.use(function (req, res, next) {
                         return true;
                     }
                 }
-            } else if (index + 1 === config.authentication.levels.length || config.authentication[level].through === '') {
-                // If there is no token, return an error
-                res.status(401).send({
-                    success: false,
-                    error: 'Unauthorized'
-                });
-                return true;
+            } else {
+                if (index + 1 === length || configAuthenticationLevel.through === '') {
+                                // If there is no token, return an error
+                                res.status(401).send({
+                                    success: false,
+                                    error: 'Unauthorized'
+                                });
+                                return true;
+                            }
             }
         }
     });
-});
-
-// NEV configuration =====================
-config.enroll.persistentUserModel = User;
-nev.configure(config.enroll, function (err, options) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-
-    console.log('configured: ' + (typeof options === 'object'));
-});
-
-// Generating the model, pass the User model defined earlier
-nev.generateTempUserModel(User, function (err, tempUserModel) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-
-    console.log('generated temp user model: ' + (typeof tempUserModel === 'function'));
 });
 
 module.exports = apiRoutes;

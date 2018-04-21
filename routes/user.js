@@ -39,7 +39,7 @@ router.put('/', function (req, res) {
         var disabled = req.body["disabled"];
         var email = req.body["email"];
         var updateUser = {};
-        if (password) updateUser["password"] = config.hash(password);
+        if (password && password !== '') updateUser["password"] = config.hash(password);
         if (scope) updateUser["scope"] = scope;
         if (email) updateUser["email"] = email;
         if (disabled) updateUser["disabled"] = disabled === "true";
@@ -81,8 +81,9 @@ router.delete('/', function (req, res) {
 });
 
 /* Get a user. */
-router.get('/:userName', function (req, res) {
+router.get(['/:userName','/'], function (req, res) {
     var userName = req.params.userName;
+    if (!userName && req.decoded) userName = req.decoded.sub;
     var condition = (!userName || userName.toLowerCase() === "all") ? {} : {userName: userName};
     User.findOne(condition, function (err, user) {
         if (err) return res.json({success: false, error: err["errmsg"]});

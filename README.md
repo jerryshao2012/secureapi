@@ -54,6 +54,10 @@ level1: {
 level2: {
     urls: ['/api/v1'],
     through: 'jwt'
+},
+level3: {
+    urls: ['/api/v2'],
+    through: 'web'
 }
 ````
 ### Postman collection
@@ -81,9 +85,16 @@ Beside console logs, api logs are located in root/logs/all-logs.log.
 Log level and format is defined in root/config.js.
 ````
 // Log level & format
-logFormat: "dev",
+logFormat: "dev"
 
 ````
+## Web reference application for Secure API
+Use brower to access:
+````
+http://localhost:6002/api/v2/home
+````
+Note: contains reference implementation for password recovery / sign up / remember me
+
 ## References
 * [Underscore](http://underscorejs.org) a library that provides a whole mess of useful functional programming helpers without extending any built-in objects.
 * [Express](https://expressjs.com) fast, unopinionated, minimalist web framework for Node.js
@@ -99,7 +110,11 @@ logFormat: "dev",
 * [Mocha](https://mochajs.org) a feature-rich JavaScript test framework running on Node.js and in the browser, making asynchronous testing simple and fun. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught exceptions to the correct test cases.
 * [Chai](http://www.chaijs.com) a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework
 * [Chai HTTP](https://github.com/chaijs/chai-http) HTTP integration testing with Chai assertions
+* [express-session](https://github.com/expressjs/session) Express session middleware
+* (connect-mongodb-session)[https://github.com/mongodb-js/connect-mongodb-session] Use to store express web sessions in MongoDB
+* (Nodemailer)[https://github.com/nodemailer/nodemailer] Send e-mails with Node.JS
+* (nodemailer-express-handlebars)[https://www.npmjs.com/package/nodemailer-express-handlebars] Express Handlebars plugin for Nodemailer
 
 ## TODO
 - Convert into ESX/Ecma6 without Transpiler (Babel etc.)
-- Make test cases' dependency more clean
+- Make test cases' dependency more clean. 

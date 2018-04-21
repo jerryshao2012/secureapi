@@ -1,0 +1,24 @@
+extends layout
+
+block content
+
+	nav.navbar.navbar-default.navbar-fixed-top
+		.container
+			.navbar-header
+				.navbar-brand Control Panel
+			ul.nav.navbar-nav.navbar-right
+				li
+					.navbar-btn#btn-logout.btn.btn-default
+						| Sign Out
+
+	include account
+	include modals/alert
+	include modals/confirm
+
+block scripts
+	script(src='/javascripts/jquery-2.2.3.min.js')
+	script(src='/javascripts/jquery.form.min.js')
+	script(src='/javascripts/bootstrap.min.js')
+	script(src='/javascripts/views/home.js')
+	script(src='/javascripts/controllers/homeController.js')
+	script(src='/javascripts/form-validators/accountValidator.js')

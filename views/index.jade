@@ -1,5 +1,41 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+
+	#login.center-vertical
+		form.well(id='form-login', method='post', action='/api/v2/login')
+			h2 Hello!
+			h6 Please Login To Your Account
+			.form-group
+				label Username
+				input.form-control(type='text', id='user-tf', name='userName')
+			.form-group
+				label Password
+				input.form-control(type='password', id='pass-tf', name='password')
+			.controls
+				button(type='button').btn.btn-default.button-rememember-me
+					span.glyphicon.glyphicon-unchecked.button-rememember-me-glyph
+					| Remember Me
+				button(type='submit').btn.btn-primary.button-sign-in
+					span.glyphicon.glyphicon-lock
+					| Sign In
+			.clearfix
+			hr
+			.btm-links
+				#forgot-password
+					a(href='#') Forgot Your Password?
+				#create-account
+					a(href='/api/v2/signup') Create An Account
+			.clearfix
+
+	include modals/alert
+	include modals/lost-password
+
+block scripts
+	script(src='/javascripts/jquery-2.2.3.min.js')
+	script(src='/javascripts/jquery.form.min.js')
+	script(src='/javascripts/bootstrap.min.js')
+	script(src='/javascripts/views/login.js')
+	script(src='/javascripts/controllers/loginController.js')
+	script(src='/javascripts/form-validators/loginValidator.js')
+	script(src='/javascripts/form-validators/emailValidator.js')

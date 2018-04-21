@@ -114,7 +114,9 @@ Note: contains reference implementation for password recovery / sign up / rememb
 * [connect-mongodb-session](https://github.com/mongodb-js/connect-mongodb-session) Use to store express web sessions in MongoDB
 * [Nodemailer](https://github.com/nodemailer/nodemailer) Send e-mails with Node.JS
 * [nodemailer-express-handlebars](https://www.npmjs.com/package/nodemailer-express-handlebars) Express Handlebars plugin for Nodemailer
+* [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware) Reverse proxy for Node.JS
 
 ## TODO
 - Convert into ESX/Ecma6 without Transpiler (Babel etc.)
-- Make test cases' dependency more clean. 
+- Make test cases' dependency more clean
+- Swagger update

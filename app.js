@@ -21,6 +21,9 @@ const jwt = require('jsonwebtoken');
 const logger = require('./app/logger');
 // Launch cron jobs
 new require('./app/job');
+// Reverse proxy
+const reverseProxy = require('http-proxy-middleware');
+const _ = require('underscore');
 
 // Get our mongoose model
 const User = require('./app/models/user');
@@ -130,7 +133,7 @@ var sessionSettings = {
     store: webSessionStore
 };
 // Catch errors
-webSessionStore.on('error', function(error) {
+webSessionStore.on('error', function (error) {
     assert.ifError(error);
     assert.ok(false);
 });
@@ -160,6 +163,12 @@ app.use(function (err, req, res) {
     // Render the error page
     res.status(err.status || 500);
     res.render('error');
+});
+
+// Reverse proxy
+_.each(config.reverseProxy, function (proxy) {
+    var newProxy = reverseProxy(proxy.context, proxy.options);
+    app.use(newProxy);
 });
 
 module.exports = app;

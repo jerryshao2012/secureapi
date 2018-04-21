@@ -10,13 +10,13 @@ var host = "http://localhost:" + port;
 var secret = "thisisatesthybridapp";
 var publicKey = "-----BEGIN RSA PUBLIC KEY-----\nMIGJAoGBAM2mPuQVXy+AaswmgV1zPCMhuRfJNu3JleJyzi7ooUG83oeldSu5N2QA\ntbM7ZEefDJwkfXMOYmR0kLleOS4p2eGEVDQUZe3K+zHYzsMSRQ3tWHJ42gUwHOro\nfmdeS7DvXbkOOiy7iZKH1rXM908tdgL7SK8na0EFrIT73Gs6Oh+tAgMBAAE=\n-----END RSA PUBLIC KEY-----\n";
 
-var hashData = function(password) {
+var hashData = function (password) {
     if (!password) return '';
     return crypto.createHmac('sha256', secret).update(password).digest('base64');
 };
 
 // Sync version of hashing function
-var nevHash = function(password, tempUserData, insertTempUser, callback) {
+var nevHash = function (password, tempUserData, insertTempUser, callback) {
     var hash = hashData(password);
     return insertTempUser(hash, tempUserData, callback);
 };
@@ -126,5 +126,32 @@ module.exports = {
     },
     host: host,
     port: port,
-    hash: hashData
+    hash: hashData,
+    reverseProxy: [
+        // Check https://github.com/chimurai/http-proxy-middleware for how to config reverse proxy
+        {
+            context: '/api/v1/sales',
+            options: {
+                target: 'http://www.example.org',
+                changeOrigin: true
+            }
+        },
+        {
+            context: '/api;v1/dashboard',
+            options: {
+                target: 'http://www.example1.org',  // target host
+                changeOrigin: true,                 // needed for virtual hosted sites
+                ws: true,                           // proxy websockets
+                pathRewrite: {
+                    '^/api/old-path': '/api/new-path',     // rewrite path
+                    '^/api/remove/path': '/path'           // remove base path
+                },
+                router: {
+                    // when request.headers.host == 'dev.localhost:3000',
+                    // override target 'http://www.example.org' to 'http://localhost:8000'
+                    'dev.localhost:3000': 'http://localhost:8000'
+                }
+            }
+        }
+    ]
 };

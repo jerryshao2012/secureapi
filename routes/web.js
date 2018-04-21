@@ -15,50 +15,69 @@ const config = require('../config');
 
 webRoutes.use(function (req, res, next) {
     var length = config.authentication.webLevels.length;
-    if (req.session && req.session.user) {
-        function arrayContains(array, item) {
-            if (Array.isArray(array) && typeof item === 'string') {
-                // For URL contains
-                var length = array.length;
-                for (var i = 0; i < length; i++) {
-                    if (array[i] && item.indexOf(array[i]) >= 0) return true;
-                }
-            } else if (Array.isArray(array) && Array.isArray(item)) {
-                // For two array scope
-                var length1 = array.length;
-                var length2 = item.length;
-                for (var i1 = 0; i1 < length1; i1++) {
-                    for (var i2 = 0; i2 < length2; i2++) {
-                        if (array[i1] && item[i2] && item[i2] === array[i1]) return true;
-                    }
-                }
-            }
-            return false;
-        }
 
-        _.some(config.authentication.webLevels, function (level, index) {
-            var configAuthenticationLevel = config.authentication[level];
-            if (arrayContains(configAuthenticationLevel.urls, req.originalUrl)) {
-                if (configAuthenticationLevel.through === 'web'
-                    && (!configAuthenticationLevel.scope || arrayContains(configAuthenticationLevel.scope.split(','),
-                        req.session.user.scope ? req.session.user.scope.split(',') : []))) {
-                    next();
-                    return true;
-                } else {
-                    if (index + 1 === length || configAuthenticationLevel.through === '') {
-                        // If there is no session, return an error
-                        res.status(401).send({
-                            success: false,
-                            error: 'Unauthorized'
-                        });
-                        return true;
-                    }
+    function arrayContains(array, item) {
+        if (Array.isArray(array) && typeof item === 'string') {
+            // For URL contains
+            var length = array.length;
+            for (var i = 0; i < length; i++) {
+                if (array[i] && item.indexOf(array[i]) >= 0) return true;
+            }
+        } else if (Array.isArray(array) && Array.isArray(item)) {
+            // For two array scope
+            var length1 = array.length;
+            var length2 = item.length;
+            for (var i1 = 0; i1 < length1; i1++) {
+                for (var i2 = 0; i2 < length2; i2++) {
+                    if (array[i1] && item[i2] && item[i2] === array[i1]) return true;
                 }
             }
-        });
+        }
+        return false;
+    }
+
+    if (req.session && req.session.user) {
+        if (_.some(config.authentication.webLevels, function (level, index) {
+                var configAuthenticationLevel = config.authentication[level];
+                if (arrayContains(configAuthenticationLevel.urls, req.originalUrl)) {
+                    if (configAuthenticationLevel.through === 'web'
+                        && (!configAuthenticationLevel.scope || arrayContains(configAuthenticationLevel.scope.split(','),
+                            req.session.user.scope ? req.session.user.scope.split(',') : []))) {
+                        next();
+                        return true;
+                    } else {
+                        if (index + 1 === length || configAuthenticationLevel.through === '') {
+                            next();
+                            return true;
+                        }
+                    }
+                }
+            }) === false) {
+            return res.status(401).send({
+                success: false,
+                error: 'Unauthorized'
+            });
+        }
     } else {
         // Unauthenticated. Level 0
-        return next();
+        if (_.some(config.authentication.webLevels, function (level, index) {
+                var configAuthenticationLevel = config.authentication[level];
+                if (arrayContains(configAuthenticationLevel.urls, req.originalUrl)) {
+                    if (configAuthenticationLevel.through === 'web' && !configAuthenticationLevel.scope) {
+                        return false;
+                    } else {
+                        if (index + 1 === length || configAuthenticationLevel.through === '') {
+                            next();
+                            return true;
+                        }
+                    }
+                }
+            }) === false) {
+            return res.status(401).send({
+                success: false,
+                error: 'Unauthorized'
+            });
+        }
     }
 });
 
@@ -476,6 +495,12 @@ webRoutes.delete('/user', function (req, res) {
             }
         });
     }
+});
+
+// Catch 401
+webRoutes.get('*', function (req, res) {
+    console.error("401: " + req.originalUrl);
+    res.redirect('/');
 });
 
 // Catch 404

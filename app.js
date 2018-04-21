@@ -98,12 +98,6 @@ app.use('/', indexRouter);
 // Route for secure api
 app.use('/api/v1', publicApiRouters);
 
-// Reverse proxy
-_.each(config.reverseProxy, function (proxy) {
-    var newProxy = reverseProxy(proxy.context, proxy.options);
-    app.use(newProxy);
-});
-
 // API ROUTES -------------------
 // Get an instance of the router for api routes
 var apiRoutes = express.Router();
@@ -153,6 +147,12 @@ if (process.env.name === 'production') {
 app.use("/api/v2", webSession(sessionSettings));
 // Route for web app
 app.use('/api/v2', webApiRouter);
+
+// Reverse proxy
+_.each(config.reverseProxy, function (proxy) {
+    var newProxy = reverseProxy(proxy.context, proxy.options);
+    app.use(newProxy);
+});
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {

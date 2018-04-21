@@ -220,6 +220,7 @@ var restrictSession = {};
 // Route middleware to verify a token
 apiRoutes.use(function (req, res, next) {
     var length = config.authentication.apiLevels.length;
+
     function arrayContains(array, item) {
         if (Array.isArray(array) && typeof item === 'string') {
             // For URL contains
@@ -300,9 +301,9 @@ apiRoutes.use(function (req, res, next) {
                                 error: 'Invalid session'
                             });
                             // Verifies secret and checks exp: config.secret
-                            jwt.verify(token, config.jwt.publicKey, function (err, decoded) {
+                            jwt.verify(token, config.jwt.publicKey, {issuer: config.jwt.issuer}, function (err, decoded) {
                                 if (err || config.authentication[level].scope
-                                        && !arrayContains(config.authentication[level].scope.split(','),
+                                    && !arrayContains(config.authentication[level].scope.split(','),
                                         decoded.scope ? decoded.scope.split(',') : [])) {
                                     return res.status(401).json({success: false, error: 'Invalid token'});
                                 } else {
@@ -318,13 +319,13 @@ apiRoutes.use(function (req, res, next) {
                 }
             } else {
                 if (index + 1 === length || configAuthenticationLevel.through === '') {
-                                // If there is no token, return an error
-                                res.status(401).send({
-                                    success: false,
-                                    error: 'Unauthorized'
-                                });
-                                return true;
-                            }
+                    // If there is no token, return an error
+                    res.status(401).send({
+                        success: false,
+                        error: 'Unauthorized'
+                    });
+                    return true;
+                }
             }
         }
     });

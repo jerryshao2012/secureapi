@@ -155,7 +155,7 @@ webRoutes.get('/home', function (req, res) {
             var tokenParts = token.split('.');
             if (Array.isArray(tokenParts) && tokenParts.length === 3) {
                 // Verifies secret and checks exp: config.secret
-                jwt.verify(token, config.jwt.publicKey, function (err, decoded) {
+                jwt.verify(token, config.jwt.publicKey, {issuer: config.jwt.issuer}, function (err, decoded) {
                     if (err) {
                         // If user is not logged-in
                         return res.render('index', {title: 'Secure API - Please Login To Your Account'});
@@ -420,7 +420,7 @@ webRoutes.post('/lost-password', function (req, res) {
 
 webRoutes.get('/reset-password/:token', function (req, res) {
     var token = req.params.token;
-    jwt.verify(token, config.jwt.publicKey, function (err, decoded) {
+    jwt.verify(token, config.jwt.publicKey, {issuer: config.jwt.issuer}, function (err, decoded) {
         if (err) {
             console.log('Invalid token for reset password: ', token);
             return res.redirect('/');

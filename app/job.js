@@ -29,7 +29,7 @@ cron.schedule('0 */2 * * *', function () {
                         if (!err) {
                             _.each(sessions, function (session) {
                                 console.log("Check session token: " + session.token);
-                                jwt.verify(session.token, config.jwt.publicKey, function (err) {
+                                jwt.verify(session.token, config.jwt.publicKey, {issuer: config.jwt.issuer}, function (err) {
                                     // Only clean expired token
                                     if (err && err.name === 'TokenExpiredError') {
                                         Session.findOneAndRemove({

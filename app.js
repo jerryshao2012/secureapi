@@ -98,6 +98,12 @@ app.use('/', indexRouter);
 // Route for secure api
 app.use('/api/v1', publicApiRouters);
 
+// Reverse proxy
+_.each(config.reverseProxy, function (proxy) {
+    var newProxy = reverseProxy(proxy.context, proxy.options);
+    app.use(newProxy);
+});
+
 // API ROUTES -------------------
 // Get an instance of the router for api routes
 var apiRoutes = express.Router();
@@ -163,12 +169,6 @@ app.use(function (err, req, res) {
     // Render the error page
     res.status(err.status || 500);
     res.render('error');
-});
-
-// Reverse proxy
-_.each(config.reverseProxy, function (proxy) {
-    var newProxy = reverseProxy(proxy.context, proxy.options);
-    app.use(newProxy);
 });
 
 module.exports = app;

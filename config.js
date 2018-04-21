@@ -130,14 +130,17 @@ module.exports = {
     reverseProxy: [
         // Check https://github.com/chimurai/http-proxy-middleware for how to config reverse proxy
         {
-            context: '/api/v1/sales',
+            context: ['/api/v2/sales', '/logos', '/images', '/xjs', '/logos', '/gen_204'],
             options: {
-                target: 'http://www.example.org',
-                changeOrigin: true
+                target: 'https://www.google.com',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api/v2/sales': '/'           // remove base path
+                }
             }
         },
         {
-            context: '/api;v1/dashboard',
+            context: '/api/v1/dashboard',
             options: {
                 target: 'http://www.example1.org',  // target host
                 changeOrigin: true,                 // needed for virtual hosted sites

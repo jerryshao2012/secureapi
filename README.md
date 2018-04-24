@@ -106,7 +106,7 @@ Note: For web client side, the generated client side elliptic key will be kept i
 * [JSON Web Tokens](https://github.com/auth0/node-jsonwebtoken) an implementation of JSON Web Tokens
 * [mongoose](http://mongoosejs.com) elegant mongodb object modeling for node.js 
 * [Node Email Verification](https://github.com/whitef0x0/node-email-verification) verify user signup over email with NodeJS and MongoDB
-* [rsa-json](https://github.com/substack/rsa-json) generate RSA keypairs as json blobs
+* [node-rsa](https://github.com/rzcoder/node-rsa) NodeJS RSA library
 * [Swagger UI Express](https://www.npmjs.com/package/swagger-ui-express) adds middleware to your express app to serve the Swagger UI bound to your Swagger document. This acts as living documentation for your API hosted from within your app
 * [cfenv](https://github.com/cloudfoundry-community/node-cfenv) easy access to your Cloud Foundry application environment
 * [node-cron](https://github.com/kelektiv/node-cron) tiny task scheduler in pure JavaScript for node.js based on GNU crontab. This module allows you to schedule task in node.js using full crontab syntax.

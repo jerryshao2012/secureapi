@@ -93,9 +93,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 /**
  * Routes
  */
-// Basic route
+// Basic route for default page
 app.use('/', indexRouter);
-// Route for secure api
+// Route for authentication interface of secure api
 app.use('/api/v1', publicApiRouters);
 
 // API ROUTES -------------------
@@ -111,7 +111,7 @@ apiRoutes.get('/userInfo', function (req, res) {
     res.redirect('/api/v1/user/');
 });
 
-// Apply the routes to our application with the prefix /api/v1
+// Apply the routes to our api with the prefix /api/v1
 app.use('/api/v1', apiRoutes);
 
 var webSessionStore = new MongoWebSessionStore({
@@ -144,11 +144,13 @@ if (process.env.name === 'production') {
     // Serve secure cookies
     sessionSettings.cookie.secure = true;
 }
+// Enable web session
 app.use("/api/v2", webSession(sessionSettings));
-// Route for web app
+// Route for authentication interface of secure web
+// Apply the routes to our web application with the prefix /api/v2
 app.use('/api/v2', webApiRouter);
 
-// Reverse proxy
+// Reverse proxy for protected APIs
 _.each(config.reverseProxy, function (proxy) {
     var newProxy = reverseProxy(proxy.context, proxy.options);
     app.use(newProxy);

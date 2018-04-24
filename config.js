@@ -8,7 +8,6 @@ const appEnv = cfenv.getAppEnv();
 const port = normalizePort(appEnv.port || process.env.PORT || 3000);
 var host = "http://localhost:" + port;
 var secret = "thisisatesthybridapp";
-var publicKey = "-----BEGIN RSA PUBLIC KEY-----\nMIGJAoGBAM2mPuQVXy+AaswmgV1zPCMhuRfJNu3JleJyzi7ooUG83oeldSu5N2QA\ntbM7ZEefDJwkfXMOYmR0kLleOS4p2eGEVDQUZe3K+zHYzsMSRQ3tWHJ42gUwHOro\nfmdeS7DvXbkOOiy7iZKH1rXM908tdgL7SK8na0EFrIT73Gs6Oh+tAgMBAAE=\n-----END RSA PUBLIC KEY-----\n";
 
 var hashData = function (password) {
     if (!password) return '';
@@ -70,11 +69,7 @@ module.exports = {
         expiresInMilliseconds: 1000 * 60 * 60 * 24,
         // Used in web session: https://github.com/zeit/ms
         ssoExpiresIn: "7d",
-        ssoExpiresInSeconds: 60 * 60 * 24 * 7,
-        // RSA Private Key for token
-        privateKey: "-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgQDNpj7kFV8vgGrMJoFdczwjIbkXyTbtyZXics4u6KFBvN6HpXUr\nuTdkALWzO2RHnwycJH1zDmJkdJC5XjkuKdnhhFQ0FGXtyvsx2M7DEkUN7VhyeNoF\nMBzq6H5nXkuw7125Djosu4mSh9a1zPdPLXYC+0ivJ2tBBayE+9xrOjofrQIDAQAB\nAoGAaUe1pLCoRTo58n+39K582AN4rYuuWje8Suy5T1x6yZu2VL1I6fRtPf37B2Hd\naaksHHe13YQ8rO7b9HofTdnRF25GK58Edgrs1nKY1QJpwlBtB5LW2MkB7HUZNeLN\nNxY6TCAFdINuHAbJKYNVJLKcfBhKBZk+NvazvsgxmYWduwUCQQD269Dkm6CF5Xq0\nraIZ5FFcaJWkgfkgNZJfSjNy79qlL9ZtMquyd3srQaw16ngbwY1sLO/XQ+pmndYL\ntqS+WEWXAkEA1TXz6haE6e2T7K+5eQBig2/Cdejg2oKMNRN+C+KpwbXrxH1soCao\noiMtfm4h2rhxxL9kfTYV/o8QoqMoEnwVWwJAMeM5JEcRKpxPq1t9ac/IZGw497DO\n3aQVO61pMaqmOUOuBgf7yqX7O6UcHxSNScZURWva1VpCbJMtINa4+EArZwJAIpya\nlyLGuu79d4vjURhV5b5r1BZVAkP1HNyoNqe6JR8yQfiWfL0p3QBW71JTnp0Yovbr\nCkSQd32kFrLj23RXRwJAP7U/yQmJ4OfjYYYAmi8RNy2rN9b2qoTKcRfZYWPhFI9E\nDPQ9sDCYlH3ncsZulijpoaRDBfp69kpTNggfQTYXGQ==\n-----END RSA PRIVATE KEY-----\n",
-        // RSA Public Key for token
-        publicKey: publicKey
+        ssoExpiresInSeconds: 60 * 60 * 24 * 7
     },
     enroll: {
         tempUserCollection: "tempUsers",
@@ -84,7 +79,7 @@ module.exports = {
             service: "Gmail",
             auth: {
                 user: "awesomeapp.api@gmail.com",
-                pass: "*********"
+                pass: "**********"
             }
         },
 

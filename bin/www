@@ -8,6 +8,10 @@ const cfenv = require('cfenv');
 const app = require('../app');
 const debug = require('debug')('secureapis:server');
 const http = require('http');
+// Crypto library
+const crypto = require('crypto');
+// Node RSA library
+var NodeRSA = require('node-rsa');
 
 // Get the app environment from Cloud Foundry
 const appEnv = cfenv.getAppEnv();
@@ -16,6 +20,48 @@ const config = require('../config');
 // Get port from environment and store in Express.
 const port = config.port;
 app.set('port', port);
+
+// Initialize server environment
+const fs = require('fs');
+const file = './server.json';
+if (!fs.existsSync(file)) {
+    // Elliptic Curve Diffie-Hellman (ECDH) key exchanges
+    var serverKey = crypto.createECDH('secp256k1');
+    serverKey.generateKeys();
+    const privateKey = serverKey.getPrivateKey().toString('base64');
+    const publicKey = serverKey.getPublicKey().toString('base64');
+    config.elliptic = {
+        privateKey: privateKey,
+        publicKey: publicKey
+    };
+
+    // RSA key
+    var rsaKeyPair = new NodeRSA({b: 1024});
+    config.jwt.privateKey = rsaKeyPair.exportKey('pkcs1-private-pem');
+    config.jwt.publicKey = rsaKeyPair.exportKey('pkcs1-public-pem');
+
+    // Keep in file
+    fs.writeFileSync(file, JSON.stringify({
+        elliptic: {
+            privateKey: privateKey,
+            publicKey: publicKey
+        },
+        rsa: {
+            // RSA Private Key for token
+            privateKey: config.jwt.privateKey,
+            // RSA Public Key for token
+            publicKey: config.jwt.publicKey
+        }
+    }));
+} else {
+    const serverStore = JSON.parse(fs.readFileSync(file));
+    config.elliptic = {
+        privateKey: serverStore.elliptic.privateKey,
+        publicKey: serverStore.elliptic.publicKey
+    };
+    config.jwt.privateKey = serverStore.rsa.privateKey;
+    config.jwt.publicKey = serverStore.rsa.publicKey;
+}
 
 /**
  * Create HTTP server.

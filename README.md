@@ -95,6 +95,11 @@ http://localhost:6002/api/v2/home
 ````
 Note: contains reference implementation for password recovery / sign up / remember me
 
+## Fast elliptic-curve cryptography
+[Elliptic-curve cryptography (ECC)](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography) is an approach to public-key cryptography based on the algebraic structure of elliptic curves over finite fields. ECC requires smaller keys compared to non-ECC cryptography (based on plain Galois fields) to provide equivalent security. Reference implementation for how to use Elliptic Curve Cryptography library in web application with NodeJS [crypto module](https://nodejs.org/api/crypto.htm).
+
+Note: For web client side, the generated client side elliptic key will be kept in local storage.
+
 ## References
 * [Underscore](http://underscorejs.org) a library that provides a whole mess of useful functional programming helpers without extending any built-in objects.
 * [Express](https://expressjs.com) fast, unopinionated, minimalist web framework for Node.js
@@ -115,6 +120,9 @@ Note: contains reference implementation for password recovery / sign up / rememb
 * [Nodemailer](https://github.com/nodemailer/nodemailer) Send e-mails with Node.JS
 * [nodemailer-express-handlebars](https://www.npmjs.com/package/nodemailer-express-handlebars) Express Handlebars plugin for Nodemailer
 * [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware) Reverse proxy for Node.JS
+* [aes-js](https://github.com/ricmoo/aes-js) A pure JavaScript implementation of the AES block cipher algorithm and all common modes of operation (CBC, CFB, CTR, ECB and OFB)
+* [Elliptic](https://github.com/indutny/elliptic) Fast elliptic-curve cryptography in a plain javascript implementation
+* [Browserify](http://browserify.org/) run NodeJS in browser - require('modules') in the browser by bundling up all of your dependencies
 
 ## TODO
 - Convert into ESX/Ecma6 without Transpiler (Babel etc.)

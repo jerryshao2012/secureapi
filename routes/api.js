@@ -195,6 +195,10 @@ apiRoutes.get('/email-verification/:URL', function (req, res) {
 apiRoutes.get('/publickey', function (req, res) {
     res.status(200).send(config.jwt.publicKey);
 });
+// Elliptic Curve Diffie-Hellman (ECDH) public key
+apiRoutes.get('/epublickey', function (req, res) {
+    res.status(200).send(config['elliptic'].publicKey);
+});
 // Route to logoff a user (GET http://localhost:8080/api/logoff)
 apiRoutes.get('/logoff', function (req, res) {
     var token = req.body.token || req.query.token || req.headers['authorization'];

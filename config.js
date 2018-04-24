@@ -12,6 +12,7 @@ var publicKey = "-----BEGIN RSA PUBLIC KEY-----\nMIGJAoGBAM2mPuQVXy+AaswmgV1zPCM
 
 var hashData = function (password) {
     if (!password) return '';
+
     return crypto.createHmac('sha256', secret).update(password).digest('base64');
 };
 

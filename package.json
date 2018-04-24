@@ -15,6 +15,7 @@
     "api"
   ],
   "dependencies": {
+    "aes-js": "^3.1.1",
     "assert": "^1.4.1",
     "body-parser": "^1.18.2",
     "cfenv": "^1.0.4",
@@ -25,6 +26,7 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "http-errors": "~1.6.2",
+    "http-proxy-middleware": "^0.18.0",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.12",

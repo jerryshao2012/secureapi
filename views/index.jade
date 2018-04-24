@@ -2,6 +2,8 @@ extends layout
 
 block content
 
+	input(type='hidden', value= epublickey)#epk
+	input(type='hidden', value= iv)#iv
 	#login.center-vertical
 		form.well(id='form-login', method='post', action='/api/v2/login')
 			h2 Hello!
@@ -32,9 +34,10 @@ block content
 	include modals/lost-password
 
 block scripts
-	script(src='/javascripts/jquery-2.2.3.min.js')
+	script(src='/javascripts/jquery.min.js')
 	script(src='/javascripts/jquery.form.min.js')
 	script(src='/javascripts/bootstrap.min.js')
+	script(src='/javascripts/aes-js.js')
 	script(src='/javascripts/views/login.js')
 	script(src='/javascripts/controllers/loginController.js')
 	script(src='/javascripts/form-validators/loginValidator.js')

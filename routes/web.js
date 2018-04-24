@@ -4,6 +4,8 @@ const webRoutes = express.Router();
 // Used to create, sign, and verify tokens
 const jwt = require('jsonwebtoken');
 const path = require('path');
+// Crypto library
+const crypto = require('crypto');
 // Enrollment api
 const enroll = require('../app/enroll');
 
@@ -104,7 +106,8 @@ webRoutes.post('/login', function (req, res) {
                 } else if (user) {
                     // Check if password matches
                     var password = req.body.password;
-                    if (!user.validPassword(password) && user.disabled === false) {
+                    const clientPublicKey = req.body.epk;
+                    if (!user.validPassword(password, clientPublicKey) && user.disabled === false) {
                         return res.status(403).json({success: false, error: 'Authentication failed'});
                     } else {
                         req.session.user = user;
@@ -148,7 +151,11 @@ webRoutes.get('/home', function (req, res) {
         // Check if the user's sso token is saved in a cookie
         if (!req.cookies || !req.cookies['sso.token']) {
             // If user is not logged-in
-            res.render('index', {title: 'Secure API - Please Login To Your Account'});
+            res.render('index', {
+                title: 'Secure API - Please Login To Your Account',
+                epublickey: config.elliptic.publicKey,
+                iv: crypto.randomBytes(8).toString('base64')
+            });
         } else {
             // Attempt automatic login using SSO token
             var token = req.cookies['sso.token'];
@@ -158,7 +165,11 @@ webRoutes.get('/home', function (req, res) {
                 jwt.verify(token, config.jwt.publicKey, {issuer: config.jwt.issuer}, function (err, decoded) {
                     if (err) {
                         // If user is not logged-in
-                        return res.render('index', {title: 'Secure API - Please Login To Your Account'});
+                        return res.render('index', {
+                            title: 'Secure API - Please Login To Your Account',
+                            epublickey: config.elliptic.publicKey,
+                            iv: crypto.randomBytes(8).toString('base64')
+                        });
                     } else {
                         User.findOne({
                             userName: decoded.sub
@@ -166,7 +177,11 @@ webRoutes.get('/home', function (req, res) {
                             if (err || !user) {
                                 console.log("Single sign on authentication failed: ", err);
                                 // If user is not logged-in
-                                return res.render('index', {title: 'Secure API - Please Login To Your Account'});
+                                return res.render('index', {
+                                    title: 'Secure API - Please Login To Your Account',
+                                    epublickey: config.elliptic.publicKey,
+                                    iv: crypto.randomBytes(8).toString('base64')
+                                });
                             }
 
                             // If user is found and password is right, create a token with only our given payload

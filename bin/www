@@ -3,28 +3,12 @@
 /**
  * Module dependencies.
  */
-// Provides access to your Cloud Foundry environment for more info, see: https://www.npmjs.com/package/cfenv
-const cfenv = require('cfenv');
-const app = require('../app');
-const debug = require('debug')('secureapis:server');
-const http = require('http');
-// Crypto library
-const crypto = require('crypto');
-// Node RSA library
-var NodeRSA = require('node-rsa');
-
-// Get the app environment from Cloud Foundry
-const appEnv = cfenv.getAppEnv();
 // Get our config file
 const config = require('../config');
-// Get port from environment and store in Express.
-const port = config.port;
-app.set('port', port);
-
 // Initialize server environment
 const fs = require('fs');
-const file = './server.json';
-if (!fs.existsSync(file)) {
+const serverJsonFile = './server.json';
+if (!fs.existsSync(serverJsonFile)) {
     // Elliptic Curve Diffie-Hellman (ECDH) key exchanges
     var serverKey = crypto.createECDH('secp256k1');
     serverKey.generateKeys();
@@ -41,7 +25,7 @@ if (!fs.existsSync(file)) {
     config.jwt.publicKey = rsaKeyPair.exportKey('pkcs1-public-pem');
 
     // Keep in file
-    fs.writeFileSync(file, JSON.stringify({
+    fs.writeFileSync(serverJsonFile, JSON.stringify({
         elliptic: {
             privateKey: privateKey,
             publicKey: publicKey
@@ -51,17 +35,36 @@ if (!fs.existsSync(file)) {
             privateKey: config.jwt.privateKey,
             // RSA Public Key for token
             publicKey: config.jwt.publicKey
-        }
+        },
+        secret: crypto.randomBytes(32).toString('hex')
     }));
 } else {
-    const serverStore = JSON.parse(fs.readFileSync(file));
+    const serverStore = JSON.parse(fs.readFileSync(serverJsonFile));
     config.elliptic = {
         privateKey: serverStore.elliptic.privateKey,
         publicKey: serverStore.elliptic.publicKey
     };
     config.jwt.privateKey = serverStore.rsa.privateKey;
     config.jwt.publicKey = serverStore.rsa.publicKey;
+    // Secret for hash
+    config.secret = serverStore.secret;
 }
+
+// Provides access to your Cloud Foundry environment for more info, see: https://www.npmjs.com/package/cfenv
+const cfenv = require('cfenv');
+const app = require('../app');
+const debug = require('debug')('secureapis:server');
+const http = require('http');
+// Crypto library
+const crypto = require('crypto');
+// Node RSA library
+var NodeRSA = require('node-rsa');
+
+// Get the app environment from Cloud Foundry
+const appEnv = cfenv.getAppEnv();
+// Get port from environment and store in Express.
+const port = config.port;
+app.set('port', port);
 
 /**
  * Create HTTP server.

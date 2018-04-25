@@ -7,12 +7,11 @@ const appEnv = cfenv.getAppEnv();
 // Get port from environment and store in Express.
 const port = normalizePort(appEnv.port || process.env.PORT || 3000);
 var host = "http://localhost:" + port;
-var secret = "thisisatesthybridapp";
 
 var hashData = function (password) {
     if (!password) return '';
 
-    return crypto.createHmac('sha256', secret).update(password).digest('base64');
+    return crypto.createHmac('sha256', this.secret).update(password).digest('base64');
 };
 
 // Sync version of hashing function
@@ -24,7 +23,7 @@ var nevHash = function (password, tempUserData, insertTempUser, callback) {
 // Async version of hashing function
 /*var nevHash = function(password, tempUserData, insertTempUser, callback) {
     // Hash instance
-    const hmac = crypto.createHmac('sha256', secret);
+    const hmac = crypto.createHmac('sha256', this.secret);
     // Readout format:
     hmac.setEncoding('base64');
     //or also commonly: hmac.setEncoding('hex');
@@ -54,8 +53,6 @@ function normalizePort(val) {
 }
 
 module.exports = {
-    // Secret for hash
-    secret: secret,
     // Database URL
     database: "mongodb://localhost:27017/secureapi",
     // Log level & format

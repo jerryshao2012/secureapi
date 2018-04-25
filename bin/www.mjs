@@ -4,15 +4,17 @@
  * Module dependencies.
  */
 // Provides access to your Cloud Foundry environment for more info, see: https://www.npmjs.com/package/cfenv
-const cfenv = require('cfenv');
-const app = require('../app');
-const debug = require('debug')('secureapis:server');
-const http = require('http');
+import cfenv from 'cfenv';
+import app from '../app';
+import _debug from 'debug';
+//import secureapis from 'secureapis:server';
+//const debug = _debug (secureapis);
+import http from 'http';
 
 // Get the app environment from Cloud Foundry
 const appEnv = cfenv.getAppEnv();
 // Get our config file
-const config = require('../config');
+import config from '../config';
 // Get port from environment and store in Express.
 const port = config.port;
 app.set('port', port);
@@ -65,7 +67,7 @@ function onListening() {
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+    //debug('Listening on ' + bind);
     // print a message when the server starts listening
     console.log("Server starting on " + appEnv.url);
 }

@@ -1,5 +1,5 @@
 // Logger framework
-const winston = require('winston');
+import winston from 'winston';
 
 // Log requests to the console
 //const logger = require('morgan');
@@ -38,4 +38,5 @@ logger.stream = {
 //app.use(require("morgan")(config.logFormat, {stream: logger.stream}));
 //app.use(require("morgan")("combined", { stream: logger.stream }));
 
-module.exports = logger;
+//module.exports = logger;
+export default logger;

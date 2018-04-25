@@ -3,7 +3,7 @@ The secure api library provides a set of security APIs for enrollment, authentic
 
 ## Usage
 
-### `node bin/www`
+### `node --experimental-modules bin/www`
 
 Start secure API services. An default admin account will be created if it is not existing.
 

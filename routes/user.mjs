@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 // Get our config file
-const config = require('../config');
+import config from '../config';
 
-const User = require('../app/models/user');
+import User from '../app/models/user';
 
 /* Create a user. */
 router.post('/', function (req, res) {
@@ -94,4 +94,5 @@ router.get('/:userName', function (req, res) {
     }).select('-_id -password -__v');
 });
 
-module.exports = router;
+//module.exports = router;
+export default router;

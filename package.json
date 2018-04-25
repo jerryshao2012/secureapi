@@ -28,9 +28,12 @@
     "mongoose": "^5.0.12",
     "morgan": "^1.9.0",
     "node-cron": "^1.2.1",
+    "npm": "^5.8.0",
     "rsa-json": "^0.2.1",
     "swagger-ui-express": "^3.0.6",
+    "to": "^0.2.9",
     "underscore": "^1.8.3",
+    "update": "^0.7.4",
     "winston": "^2.4.1"
   },
   "devDependencies": {

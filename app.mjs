@@ -1,40 +1,44 @@
 /**
  * Get the packages we need
  */
-const createError = require('http-errors');
+//const createError = require('http-errors');
+import createError from 'http-errors';
 // The popular Node framework
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
+import fs from 'fs';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
 // Get parameters from our POST requests
-const bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 // Interact with our MongoDB database
-const mongoose = require('mongoose');
-const assert = require('assert');
+import mongoose from 'mongoose';
+
+import assert from 'assert';
 // App logger framework
-const logger = require('./app/logger');
+import logger from './app/logger';
 // Launch cron jobs
-new require('./app/job');
+import job from './app/job';
+//new require('./app/job');
 
 // Get our mongoose model
-const User = require('./app/models/user');
+import User from './app/models/user';
 
 /**
  * Configuration
  */
 // Get our config file
-const config = require('./config');
+import config from './config';
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const userRouter = require('./routes/user');
-const apiRouter = require('./routes/api');
-const otherRouter = require('./routes/other');
+import indexRouter from './routes/index';
+import usersRouter from './routes/users';
+import userRouter from './routes/user';
+import apiRouter from './routes/api';
+import otherRouter from './routes/other';
 
 const app = new express();
 
 // Use morgan and winston together
-app.use(require("morgan")(config.logFormat, {stream: logger.stream}));
+//app.use(require("morgan")(config.logFormat, {stream: logger.stream}));
 
 // Connect to database
 mongoose.connect(config.database, function (err) {
@@ -71,13 +75,13 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 // View engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join('./', 'views'));
 app.set('view engine', 'jade');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join('./', 'public')));
 
 /**
  * Routes
@@ -116,4 +120,5 @@ app.use(function (err, req, res) {
     res.render('error');
 });
 
-module.exports = app;
+//module.exports = app;
+export default app;

@@ -6,8 +6,11 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 // Crypto library
 const crypto = require('crypto');
+const contextMatcher = require('../lib/reverse-proxy-libs/context-matcher');
 // Enrollment api
 const enroll = require('../app/enroll');
+// Protected reverse proxy
+const junction = require('../routes/junction');
 
 // Get our mongoose model
 const User = require('../app/models/user');
@@ -18,38 +21,30 @@ const config = require('../config');
 webRoutes.use(function (req, res, next) {
     var length = config.authentication.webLevels.length;
 
-    function arrayContains(array, item) {
-        if (Array.isArray(array) && typeof item === 'string') {
-            // For URL contains
-            var length = array.length;
-            for (var i = 0; i < length; i++) {
-                if (array[i] && item.indexOf(array[i]) >= 0) return true;
-            }
-        } else if (Array.isArray(array) && Array.isArray(item)) {
+    function arrayContains(array1, array2) {
+        if (Array.isArray(array1) && Array.isArray(array2)) {
             // For two array scope
-            var length1 = array.length;
-            var length2 = item.length;
-            for (var i1 = 0; i1 < length1; i1++) {
-                for (var i2 = 0; i2 < length2; i2++) {
-                    if (array[i1] && item[i2] && item[i2] === array[i1]) return true;
-                }
+            var length1 = array1.length;
+            for (var i = 0; i < length1; i++) {
+                if (array2.includes(array1[i])) return true;
             }
         }
         return false;
     }
 
+    var path = (req.originalUrl || req.url);
     if (req.session && req.session.user) {
         if (_.some(config.authentication.webLevels, function (level, index) {
                 var configAuthenticationLevel = config.authentication[level];
-                if (arrayContains(configAuthenticationLevel.urls, req.originalUrl)) {
+                if (contextMatcher.match(configAuthenticationLevel.urls, path, req)) {
                     if (configAuthenticationLevel.through === 'web'
                         && (!configAuthenticationLevel.scope || arrayContains(configAuthenticationLevel.scope.split(','),
                             req.session.user.scope ? req.session.user.scope.split(',') : []))) {
-                        next();
+                        junction.validateJunction(req, res, next);
                         return true;
                     } else {
                         if (index + 1 === length || configAuthenticationLevel.through === '') {
-                            next();
+                            junction.validateJunction(req, res, next);
                             return true;
                         }
                     }
@@ -64,7 +59,7 @@ webRoutes.use(function (req, res, next) {
         // Unauthenticated. Level 0
         if (_.some(config.authentication.webLevels, function (level, index) {
                 var configAuthenticationLevel = config.authentication[level];
-                if (arrayContains(configAuthenticationLevel.urls, req.originalUrl)) {
+                if (contextMatcher.match(configAuthenticationLevel.urls, path, req)) {
                     if (configAuthenticationLevel.through === 'web' && !configAuthenticationLevel.scope) {
                         return false;
                     } else {

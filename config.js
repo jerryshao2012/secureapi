@@ -100,7 +100,7 @@ module.exports = {
         apiLevels: ['level2', 'level1', 'level0'],
         webLevels: ['level3', 'level0'],
         level0: {
-            urls: ['/'],
+            urls: '/',
             through: ''
         },
         level1: {
@@ -109,18 +109,18 @@ module.exports = {
             scope: "admin"
         },
         level2: {
-            urls: ['/api/v1'],
+            urls: '/api/v1',
             through: 'jwt'
         },
         level3: {
-            urls: ['/api/v2'],
+            urls: '/api/v2',
             through: 'web'
         }
     },
     host: host,
     port: port,
     hash: hashData,
-    reverseProxy: [
+    junctions: [
         // Check https://github.com/chimurai/http-proxy-middleware for how to config reverse proxy
         {
             context: ['/api/v2/sales', '/logos', '/images', '/xjs', '/logos', '/gen_204'],
@@ -128,19 +128,19 @@ module.exports = {
                 target: 'https://www.google.com',
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/api/v2/sales': '/'           // remove base path
+                    '^/api/v2/sales': ''           // Remove path
                 }
             }
         },
         {
-            context: '/api/v1/dashboard',
+            context: '/api/v2/dashboard',
             options: {
                 target: 'http://www.example1.org',  // target host
                 changeOrigin: true,                 // needed for virtual hosted sites
                 ws: true,                           // proxy websockets
                 pathRewrite: {
-                    '^/api/old-path': '/api/new-path',     // rewrite path
-                    '^/api/remove/path': '/path'           // remove base path
+                    '^/api/v2/dashboard/old-path': '/api/new-path',     // rewrite path
+                    '^/api/v2/dashboard/remove/path': '/path'           // remove base path
                 },
                 router: {
                     // when request.headers.host == 'dev.localhost:3000',

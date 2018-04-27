@@ -3,8 +3,11 @@ const express = require('express');
 const apiRoutes = express.Router();
 // Used to create, sign, and verify tokens
 const jwt = require('jsonwebtoken');
+const contextMatcher = require('../lib/reverse-proxy-libs/context-matcher');
 // Enrollment api
 const enroll = require('../app/enroll');
+// Protected reverse proxy
+const junction = require('../routes/junction');
 
 // Crypto library
 //const crypto = require('crypto');
@@ -225,21 +228,12 @@ var restrictSession = {};
 apiRoutes.use(function (req, res, next) {
     var length = config.authentication.apiLevels.length;
 
-    function arrayContains(array, item) {
-        if (Array.isArray(array) && typeof item === 'string') {
-            // For URL contains
-            var length = array.length;
-            for (var i = 0; i < length; i++) {
-                if (array[i] && item.indexOf(array[i]) >= 0) return true;
-            }
-        } else if (Array.isArray(array) && Array.isArray(item)) {
+    function arrayContains(array1, array2) {
+        if (Array.isArray(array1) && Array.isArray(array2)) {
             // For two array scope
-            var length1 = array.length;
-            var length2 = item.length;
-            for (var i1 = 0; i1 < length1; i1++) {
-                for (var i2 = 0; i2 < length2; i2++) {
-                    if (array[i1] && item[i2] && item[i2] === array[i1]) return true;
-                }
+            var length1 = array1.length;
+            for (var i = 0; i < length1; i++) {
+                if (array2.includes(array1[i])) return true;
             }
         }
         return false;
@@ -247,7 +241,8 @@ apiRoutes.use(function (req, res, next) {
 
     _.some(config.authentication.apiLevels, function (level, index) {
         var configAuthenticationLevel = config.authentication[level];
-        if (arrayContains(configAuthenticationLevel.urls, req.originalUrl)) {
+        var path = (req.originalUrl || req.url);
+        if (contextMatcher.match(configAuthenticationLevel.urls, path, req)) {
             if (restrictSession[req.headers.authorization]) {
                 // Access granted
                 next();
@@ -273,7 +268,7 @@ apiRoutes.use(function (req, res, next) {
                                         user.scope ? user.scope.split(',') : []))) {
                                 // Access granted. authLevel = 1
                                 restrictSession[req.headers.authorization] = b64Auth;
-                                return next();
+                                return junction.validateJunction(req, res, next);
                             }
                             // Change this
                             res.set('WWW-Authenticate', 'Basic realm="401"');
@@ -314,7 +309,7 @@ apiRoutes.use(function (req, res, next) {
                                     // If everything is good, save to request for use in other routes
                                     req.decoded = decoded;
                                     // Access granted. authLevel = 2
-                                    return next();
+                                    return junction.validateJunction(req, res, next);
                                 }
                             });
                         });

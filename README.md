@@ -43,7 +43,7 @@ verifyMailOptions: {
 Authentication level: level2, level1, level0
 ````
 level0: {
-    urls: ['/'],
+    urls: '/',
     through: ''
 },
 level1: {
@@ -52,14 +52,63 @@ level1: {
     scope: "admin"
 },
 level2: {
-    urls: ['/api/v1'],
+    urls: '/api/v1',
     through: 'jwt'
 },
 level3: {
-    urls: ['/api/v2'],
+    urls: '/api/v2',
     through: 'web'
 }
 ````
+#### Context urls matching
+
+[RFC 3986 `urls`](https://tools.ietf.org/html/rfc3986#section-3.3) is used for context matching.
+
+```
+         foo://example.com:8042/over/there?name=ferret#nose
+         \_/   \______________/\_________/ \_________/ \__/
+          |           |            |            |        |
+       scheme     authority       path        query   fragment
+```
+
+* **path matching**
+    - `urls: ''` - matches any path, all requests will be proxied.
+    - `urls: '/'` - matches any path, all requests will be proxied.
+    - `urls: '/api'` - matches paths starting with `/api`
+
+* **multiple path matching**
+    - `urls: ['/api', '/ajax', '/someotherpath']` 
+
+* **wildcard path matching**
+    
+    For fine-grained control you can use wildcard matching. Glob pattern matching is done by _micromatch_. Visit [micromatch](https://www.npmjs.com/package/micromatch) or [glob](https://www.npmjs.com/package/glob) for more globbing examples.
+    - `urls: '**'` matches any path, all requests will be proxied.
+    - `urls: '**/*.html'` matches any path which ends with `.html`
+    - `urls: '/*.html'` matches paths directly under path-absolute
+    - `urls: '/api/**/*.html'` matches requests ending with `.html` in the path of `/api`
+    - `urls: ['/api/**', '/ajax/**']` combine multiple patterns
+    - `urls: ['/api/**', '!**/bad.json']` exclusion
+
+* **custom matching**
+    
+    For full control you can provide a custom function to determine which requests should be proxied or not.
+    ```
+    /**
+     * @return {Boolean}
+     */
+    var filter = function (pathname, req) {
+        return (pathname.match('^/api') && req.method === 'GET');
+    };
+
+    ...
+    level1: {
+        urls: filter,
+        through: 'basic',
+        scope: "admin"
+    }
+    ...
+    ```
+    
 ### Postman collection
 
 Postman collection is located in root/secure.APIs.postman.collection.json.
@@ -99,6 +148,45 @@ Note: contains reference implementation for password recovery / sign up / rememb
 [Elliptic-curve cryptography (ECC)](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography) is an approach to public-key cryptography based on the algebraic structure of elliptic curves over finite fields. ECC requires smaller keys compared to non-ECC cryptography (based on plain Galois fields) to provide equivalent security. Reference implementation for how to use Elliptic Curve Cryptography library in web application with NodeJS [crypto module](https://nodejs.org/api/crypto.htm).
 
 Note: For web client side, the generated client side elliptic key will be kept in local storage.
+
+## Protected reverse proxy
+
+Upgrade [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware) to be a protected reverse proxy.
+
+Sample configurations show how to reverse proxy https://www.google.com and http://www.example1.org:
+````
+    junctions: [
+        // Check https://github.com/chimurai/http-proxy-middleware for how to config reverse proxy
+        {
+            context: ['/api/v2/sales', '/logos', '/images', '/xjs', '/logos', '/gen_204'],
+            options: {
+                target: 'https://www.google.com',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api/v2/sales': ''           // Remove path
+                }
+            }
+        },
+        {
+            context: '/api/v2/dashboard',
+            options: {
+                target: 'http://www.example1.org',  // target host
+                changeOrigin: true,                 // needed for virtual hosted sites
+                ws: true,                           // proxy websockets
+                pathRewrite: {
+                    '^/api/v2/dashboard/old-path': '/api/new-path',     // rewrite path
+                    '^/api/v2/dashboard/remove/path': '/path'           // remove base path
+                },
+                router: {
+                    // when request.headers.host == 'dev.localhost:3000',
+                    // override target 'http://www.example.org' to 'http://localhost:8000'
+                    'dev.localhost:3000': 'http://localhost:8000'
+                }
+            }
+        }
+    ]
+```` 
+[http://localhost:6002/api/v2/sales](http://localhost:6002/api/v2/sales)is protected by Secure API authentication. Only successful authenticated user can access it.
 
 ## References
 * [Underscore](http://underscorejs.org) a library that provides a whole mess of useful functional programming helpers without extending any built-in objects.

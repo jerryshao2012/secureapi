@@ -22,8 +22,7 @@ const logger = require('./app/logger');
 // Launch cron jobs
 new require('./app/job');
 // Reverse proxy
-const reverseProxy = require('http-proxy-middleware');
-const _ = require('underscore');
+const junction = require('./routes/junction');
 
 // Get our mongoose model
 const User = require('./app/models/user');
@@ -145,20 +144,14 @@ if (process.env.name === 'production') {
     sessionSettings.cookie.secure = true;
 }
 // Enable web session
-app.use("/api/v2", webSession(sessionSettings));
 // Route for authentication interface of secure web
 // Apply the routes to our web application with the prefix /api/v2
-app.use('/api/v2', webApiRouter);
-
-// Reverse proxy for protected APIs
-_.each(config.reverseProxy, function (proxy) {
-    var newProxy = reverseProxy(proxy.context, proxy.options);
-    app.use(newProxy);
-});
+app.use("/api/v2", webSession(sessionSettings), webApiRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    next(createError(404));
+    if (!junction.containsJunction(req, res))
+        next(createError(404));
 });
 
 var env = process.env.NODE_ENV || 'development';

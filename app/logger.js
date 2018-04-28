@@ -1,12 +1,14 @@
 // Logger framework
 const winston = require('winston');
+// Get our config file
+const config = require('../config');
 
 // Log requests to the console
 //const logger = require('morgan');
 var logger = new winston.Logger({
     transports: [
         new winston.transports.File({
-            level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info",
+            level: process.env.LOG_LEVEL || config.loggerLevel || "info",
             filename: './logs/all-logs.log',
             handleExceptions: true,
             json: true,
@@ -15,7 +17,7 @@ var logger = new winston.Logger({
             colorize: false
         }),
         new winston.transports.Console({
-            level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "debug",
+            level: process.env.LOG_LEVEL || config.loggerLevel || "debug",
             handleExceptions: true,
             json: false,
             colorize: true

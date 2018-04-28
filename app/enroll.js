@@ -2,6 +2,8 @@
 const mongoose = require('mongoose');
 // Enrollment library
 const nev = require('email-verification')(mongoose);
+// App logger framework
+const logger = require('../app/logger');
 
 // Get our config file
 const config = require('../config');
@@ -13,21 +15,21 @@ const User = require('../app/models/user');
 config.enroll.persistentUserModel = User;
 nev.configure(config.enroll, function (err, options) {
     if (err) {
-        console.log(err);
+        logger.error(err);
         return;
     }
 
-    console.log('configured: ' + (typeof options === 'object'));
+    logger.info('configured: ' + (typeof options === 'object'));
 });
 
 // Generating the model, pass the User model defined earlier
 nev.generateTempUserModel(User, function (err, tempUserModel) {
     if (err) {
-        console.log(err);
+        logger.error(err);
         return;
     }
 
-    console.log('generated temp user model: ' + (typeof tempUserModel === 'function'));
+    logger.info('generated temp user model: ' + (typeof tempUserModel === 'function'));
 });
 
 function createTempUser(newTempUser, callback) {

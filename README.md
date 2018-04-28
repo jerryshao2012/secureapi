@@ -2,7 +2,6 @@
 The secure api library provides a set of security APIs for enrollment, authentication and authorization.
 
 ## Usage
-
 ### `node bin/www`
 
 Start secure API services. An default admin account will be created if it is not existing.
@@ -129,7 +128,7 @@ npm test
 
 ## Logs
 
-Beside console logs, api logs are located in root/logs/all-logs.log.
+Beside log through winston, api & web access logs are located in root/logs/all-logs.log.
 
 Log level and format is defined in root/config.js.
 ````
@@ -186,7 +185,7 @@ Sample configurations show how to reverse proxy https://www.google.com and http:
         }
     ]
 ```` 
-[http://localhost:6002/api/v2/sales](http://localhost:6002/api/v2/sales)is protected by Secure API authentication. Only successful authenticated user can access it.
+[http://localhost:6002/api/v2/sales](http://localhost:6002/api/v2/sales) is protected by Secure API authentication. Only successful authenticated user can access it.
 
 ## References
 * [Underscore](http://underscorejs.org) a library that provides a whole mess of useful functional programming helpers without extending any built-in objects.

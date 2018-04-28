@@ -49,7 +49,7 @@ app.use(require("morgan")(config.logFormat, {stream: logger.stream}));
 mongoose.connect(config.database, function (err) {
     assert.equal(null, err);
 
-    console.log("Connected successfully to mongo database server on startup");
+    logger.info("Connected successfully to mongo database server on startup");
 
     // For initial setup
     User.count({}, function (err, count) {
@@ -66,9 +66,9 @@ mongoose.connect(config.database, function (err) {
             // Save the sample user
             testUser.save(function (err) {
                 if (err) {
-                    console.log("Could not create first testing user", err.stack);
+                    logger.error("Could not create first testing user", err.stack);
                 } else {
-                    console.log('First testing user created successfully');
+                    logger.info('First testing user created successfully');
                 }
             });
         }

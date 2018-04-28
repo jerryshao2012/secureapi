@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 // Crypto library
 const crypto = require('crypto');
+// App logger framework
+const logger = require('../app/logger');
+
 const contextMatcher = require('../lib/reverse-proxy-libs/context-matcher');
 // Enrollment api
 const enroll = require('../app/enroll');
@@ -92,7 +95,7 @@ webRoutes.post('/login', function (req, res) {
                 userName: userName
             }, function (err, user) {
                 if (err) {
-                    console.log("Authentication failed: ", err);
+                    logger.error("Authentication failed: ", err);
                     return res.status(400).json({success: false, error: 'Authentication failed'});
                 }
 
@@ -170,7 +173,7 @@ webRoutes.get('/home', function (req, res) {
                             userName: decoded.sub
                         }, function (err, user) {
                             if (err || !user) {
-                                console.log("Single sign on authentication failed: ", err);
+                                logger.error("Single sign on authentication failed: ", err);
                                 // If user is not logged-in
                                 return res.render('index', {
                                     title: 'Secure API - Please Login To Your Account',
@@ -223,7 +226,7 @@ webRoutes.put('/user', function (req, res) {
             if (err) return res.status(400).json({success: false, error: "error-updating-account"});
             if (user) {
                 req.session.user = user;
-                console.log('User updated successfully');
+                logger.debug('User updated successfully');
                 res.json({success: true, message: 'User updated successfully'});
             } else {
                 res.status(404).json({success: false, error: 'error-updating-account'});
@@ -234,11 +237,11 @@ webRoutes.put('/user', function (req, res) {
 
 webRoutes.post('/logout', function (req, res) {
     if (req.cookies && req.cookies['sso.token']) {
-        console.log('Clean sso cookie');
+        logger.debug('Clean sso cookie');
         res.clearCookie('sso.token');
     }
     if (req.session) {
-        console.log('Logout web session');
+        logger.debug('Logout web session');
         req.session.destroy(function () {
             res.status(200).send('ok');
         });
@@ -303,10 +306,10 @@ webRoutes.post('/signup', function (req, res) {
 
                                 enroll.sendVerificationEmail(email, URL, function (err, info) {
                                     if (err) {
-                                        console.log('Sending verification email FAILED: ', email);
+                                        logger.error('Sending verification email FAILED: ', email);
                                         return res.status(404).json({success: false, error: "error-creating-account"});
                                     }
-                                    console.log('User enrolled successfully');
+                                    logger.debug('User enrolled successfully');
                                     res.status(201).json({
                                         success: true,
                                         message: 'Enroll successful: an email has been sent to you. Please check it to verify your account.',
@@ -353,7 +356,7 @@ webRoutes.get('/email-verification/:URL', function (req, res) {
                         message: 'Sending confirmation email FAILED. Click <a href="/">here</a> to go home page'
                     });
                 }
-                console.log(info);
+                logger.debug(info);
                 return res.render('info', {
                     title: 'Congratulations',
                     message: 'Confirmation successful! Click <a href="/">here</a> to go home page'
@@ -376,7 +379,7 @@ webRoutes.post('/lost-password', function (req, res) {
         email: email
     }, function (err, user) {
         if (err || !user) {
-            console.log("Sending lost password email FAILED");
+            logger.error("Sending lost password email FAILED");
             return res.status(404).json({success: false, error: 'email-not-found'});
         }
         const hbs = require('nodemailer-express-handlebars'),
@@ -432,7 +435,7 @@ webRoutes.get('/reset-password/:token', function (req, res) {
     var token = req.params.token;
     jwt.verify(token, config.jwt.publicKey, {issuer: config.jwt.issuer}, function (err, decoded) {
         if (err) {
-            console.log('Invalid token for reset password: ', token);
+            logger.error('Invalid token for reset password: ', token);
             return res.redirect('/');
         } else {
             // Save the user's email in a session instead of sending to the client
@@ -451,17 +454,17 @@ webRoutes.post('/reset-password', function (req, res) {
         var password = req.body["password"];
         var updateUser = {};
         if (password) updateUser["password"] = config.hash(password);
-        console.log('Update password for ', email);
+        logger.debug('Update password for ', email);
 
         User.findOneAndUpdate({
             email: email
         }, updateUser, {}, function (err, user) {
             if (err) {
-                console.log(email + ' failed to update password: ', e.stack);
+                logger.error(email + ' failed to update password: ', e.stack);
                 return res.status(400).json({success: false, error: 'Failed to reset password'});
             }
             if (user) {
-                console.log('User updated successfully');
+                logger.debug('User updated successfully');
                 res.status(200).json({success: true, message: 'Successfully reset password'});
             } else {
                 res.status(404).json({success: false, error: 'No user found'});
@@ -489,13 +492,13 @@ webRoutes.delete('/user', function (req, res) {
         }, {}, function (err, user) {
             if (err) return res.status(400).json({success: false, error: 'No user found'});
             if (user) {
-                console.log('User deleted successfully');
+                logger.debug('User deleted successfully');
                 if (req.cookies && req.cookies['sso.token']) {
-                    console.log('Clean sso cookie');
+                    logger.debug('Clean sso cookie');
                     res.clearCookie('sso.token');
                 }
                 if (req.session) {
-                    console.log('Logout web session');
+                    logger.debug('Logout web session');
                     req.session.destroy(function () {
                         res.status(200).send('ok');
                     });
@@ -509,20 +512,20 @@ webRoutes.delete('/user', function (req, res) {
 
 // Catch 401
 webRoutes.get('*', function (req, res) {
-    console.error("401: " + req.originalUrl);
+    logger.error("401: " + req.originalUrl);
     res.redirect('/');
 });
 
 // Catch 404
 webRoutes.get('*', function (req, res) {
-    console.error("404: " + req.originalUrl);
+    logger.error("404: " + req.originalUrl);
     res.render('404', {title: 'Page Not Found'});
 });
 
 // Application encounters an error
 webRoutes.get('*', function (err, req, res, next) {
     res.status(err.status || 500);
-    console.error(err.status + ": " + req.originalUrl + '\n' + e.stack);
+    logger.error(err.status + ": " + req.originalUrl + '\n' + e.stack);
     res.render('500', {title: 'System Error'});
 });
 

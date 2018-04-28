@@ -7,7 +7,7 @@ const User = require('../app/models/user');
 
 /* Create a user. */
 router.post('/', function (req, res) {
-    console.log("headers=" + JSON.stringify(req.headers) + "; body=" + JSON.stringify(req.body));
+    logger.debug("headers=" + JSON.stringify(req.headers) + "; body=" + JSON.stringify(req.body));
     // Create a user
     var disabled = req.body["disabled"];
     var password = req.body["password"];
@@ -25,14 +25,14 @@ router.post('/', function (req, res) {
     newUser.save(function (err) {
         if (err) return res.json({success: false, error: err["errmsg"]});
 
-        console.log('User created successfully');
+        logger.debug('User created successfully');
         res.status(201).json({success: true, message: 'User created successfully'});
     });
 });
 
 /* Update a user. */
 router.put('/', function (req, res) {
-    console.log("headers=" + JSON.stringify(req.headers) + "; body=" + JSON.stringify(req.body));
+    logger.debug("headers=" + JSON.stringify(req.headers) + "; body=" + JSON.stringify(req.body));
     if (req.body.userName) {
         var password = req.body["password"];
         var scope = req.body["scope"];
@@ -49,7 +49,7 @@ router.put('/', function (req, res) {
         }, updateUser, {}, function (err, user) {
             if (err) return res.json({success: false, error: err["errmsg"]});
             if (user) {
-                console.log('User updated successfully');
+                logger.debug('User updated successfully');
                 res.json({success: true, message: 'User updated successfully'});
             } else {
                 res.status(404).json({success: false, error: 'No user found'});
@@ -62,14 +62,14 @@ router.put('/', function (req, res) {
 
 /* Delete a user. */
 router.delete('/', function (req, res) {
-    console.log("headers=" + JSON.stringify(req.headers) + "; body=" + JSON.stringify(req.body));
+    logger.debug("headers=" + JSON.stringify(req.headers) + "; body=" + JSON.stringify(req.body));
     if (req.body.userName) {
         User.findOneAndRemove({
             userName: req.body.userName
         }, {}, function (err, user) {
             if (err) return res.json({success: false, error: err["errmsg"]});
             if (user) {
-                console.log('User deleted successfully');
+                logger.debug('User deleted successfully');
                 res.json({success: true, message: 'User deleted successfully'});
             } else {
                 res.status(404).json({success: false, error: 'No user found'});

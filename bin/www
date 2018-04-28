@@ -5,6 +5,9 @@
  */
 // Get our config file
 const config = require('../config');
+// App logger framework
+const logger = require('../app/logger');
+
 // Initialize server environment
 const fs = require('fs');
 const serverJsonFile = './server.json';
@@ -94,11 +97,11 @@ function onError(error) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
+            logger.error(bind + ' requires elevated privileges');
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
+            logger.error(bind + ' is already in use');
             process.exit(1);
             break;
         default:
@@ -116,5 +119,5 @@ function onListening() {
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
     // print a message when the server starts listening
-    console.log("Server starting on " + appEnv.url);
+    logger.info("Server starting on " + appEnv.url);
 }

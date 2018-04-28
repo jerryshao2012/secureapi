@@ -3,6 +3,8 @@ const _ = require('underscore');
 const jwt = require('jsonwebtoken');
 // Task scheduler library
 const cron = require('node-cron');
+// App logger framework
+const logger = require('../app/logger');
 
 // Get our config file
 const config = require('../config');
@@ -12,13 +14,13 @@ const Session = require('../app/models/session');
 
 // Corm job to remove session every 2 hours
 // https://www.npmjs.com/package/node-cron
-console.log(new Date() + ': clean session task every two hours');
+logger.info(new Date() + ': clean session task every two hours');
 cron.schedule('0 */2 * * *', function () {
-    console.log(new Date() + ': running a clean session task');
+    logger.debug(new Date() + ': running a clean session task');
 
     var createdAt = new Date(Date.now() - 1000 * 60 * 60);
     Session.count({createdAt: {"$lt": createdAt}}, function (err, count) {
-        console.log("Number of session(s) to verify & clean up: ", count);
+        logger.debug("Number of session(s) to verify & clean up: ", count);
 
         if (count > 0) {
             const pageSize = 100;
@@ -28,7 +30,7 @@ cron.schedule('0 */2 * * *', function () {
                     .exec(function (err, sessions) {
                         if (!err) {
                             _.each(sessions, function (session) {
-                                console.log("Check session token: " + session.token);
+                                logger.debug("Check session token: " + session.token);
                                 jwt.verify(session.token, config.jwt.publicKey, {issuer: config.jwt.issuer}, function (err) {
                                     // Only clean expired token
                                     if (err && err.name === 'TokenExpiredError') {
@@ -36,9 +38,9 @@ cron.schedule('0 */2 * * *', function () {
                                             token: session.token
                                         }, {}, function (err) {
                                             if (err) {
-                                                console.log("Failed to remove session token: " + session.token);
+                                                logger.error("Failed to remove session token: " + session.token);
                                             } else {
-                                                console.log("Removed session token: " + session.token);
+                                                logger.debug("Removed session token: " + session.token);
                                             }
                                         });
                                     }
@@ -53,7 +55,7 @@ cron.schedule('0 */2 * * *', function () {
 
 // Remove all sessions on startup
 /*Session.remove(function (err, count) {
-    console.log("Removed: " + count);
+    logger.info("Removed: " + count);
 });*/
 
 module.exports = {};

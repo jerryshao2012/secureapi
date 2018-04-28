@@ -1,6 +1,8 @@
 const _ = require('underscore');
 // Reverse proxy
 const reverseProxy = require('../lib/reverse-proxy');
+// App logger framework
+const logger = require('../app/logger');
 
 // Get our config file
 const config = require('../config');
@@ -33,7 +35,7 @@ var containsJunction = function (req, res) {
     return false;
 };
 
-console.log('Setup junctions');
+logger.info('Setup junctions');
 _.each(config.junctions, function (proxy) {
     junctions.push(reverseProxy(proxy.context, proxy.options));
 });

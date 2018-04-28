@@ -8,6 +8,8 @@ const contextMatcher = require('../lib/reverse-proxy-libs/context-matcher');
 const enroll = require('../app/enroll');
 // Protected reverse proxy
 const junction = require('../routes/junction');
+// App logger framework
+const logger = require('../app/logger');
 
 // Crypto library
 //const crypto = require('crypto');
@@ -35,7 +37,7 @@ apiRoutes.post('/login', function (req, res) {
         Session.findOneAndRemove({
             token: token
         }, {}, function () {
-            console.log('Remove old session: ' + token);
+            logger.debug('Remove old session: ' + token);
         });
     }
     var userName = req.body.userName;
@@ -45,7 +47,7 @@ apiRoutes.post('/login', function (req, res) {
             userName: userName
         }, function (err, user) {
             if (err) {
-                console.log("Authentication failed: ", err);
+                logger.error("Authentication failed: ", err);
                 return res.status(500).json({success: false, error: 'Authentication failed'});
             }
 
@@ -85,7 +87,7 @@ apiRoutes.post('/login', function (req, res) {
                     // Create a session
                     session.save(function (err) {
                         if (err) return res.status(400).json({success: false, error: err["errmsg"]});
-                        console.log('Session created successfully');
+                        logger.debug('Session created successfully');
 
                         // Return the information including token as JSON
                         res.status(201).json({
@@ -135,7 +137,7 @@ apiRoutes.post('/enroll', function (req, res) {
                     if (err) {
                         return res.status(404).json({success: false, error: "Sending verification email FAILED"});
                     }
-                    console.log('User enrolled successfully');
+                    logger.debug('User enrolled successfully');
                     res.status(201).json({
                         success: true,
                         message: 'Enroll successful: an email has been sent to you. Please check it to verify your account.',
@@ -214,7 +216,7 @@ apiRoutes.get('/logoff', function (req, res) {
         Session.findOneAndRemove({
             token: token
         }, {}, function () {
-            console.log('Logoff session: ' + token);
+            logger.debug('Logoff session: ' + token);
             res.status(200).json({success: true, message: 'Logoff successful'});
         });
     } else {

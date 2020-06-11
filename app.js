@@ -47,32 +47,33 @@ app.use(require("morgan")(config.logFormat, {stream: logger.stream}));
 
 // Connect to database
 mongoose.connect(config.database, function (err) {
-    assert.equal(null, err);
+    if (err === null) {
+        logger.info("Connected successfully to mongo database server on startup");
 
-    logger.info("Connected successfully to mongo database server on startup");
+        // For initial setup
+        User.count({}, function (err, count) {
+            if (!err && count === 0) {
+                // Create a sample user
+                var testUser = new User({
+                    userName: 'Test User',
+                    password: config.hash("password"),
+                    email: 'awesomeapp.api@gmail.com',
+                    scope: 'admin',
+                    disabled: false
+                });
 
-    // For initial setup
-    User.count({}, function (err, count) {
-        if (!err && count === 0) {
-            // Create a sample user
-            var testUser = new User({
-                userName: 'Test User',
-                password: config.hash("password"),
-                email: 'awesomeapp.api@gmail.com',
-                scope: 'admin',
-                disabled: false
-            });
-
-            // Save the sample user
-            testUser.save(function (err) {
-                if (err) {
-                    logger.error("Could not create first testing user", err.stack);
-                } else {
-                    logger.info('First testing user created successfully');
-                }
-            });
-        }
-    });
+                // Save the sample user
+                testUser.save(function (err) {
+                    if (err) {
+                        logger.error("Could not create first testing user", err.stack);
+                    } else {
+                        logger.info('First testing user created successfully');
+                    }
+                });
+            }
+        });
+    } else
+        logger.error("Could not connect to mongo database server on startup");
 });
 
 // Use cookie parser so we can get cookie from request

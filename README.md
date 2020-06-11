@@ -4,7 +4,7 @@ The secure api library provides a set of security APIs for enrollment, authentic
 ## Usage
 ### `node bin/www`
 
-Start secure API services. An default admin account will be created if it is not existing.
+Start secure API services. A default admin account will be created if it is not existing.
 
 Protected APIs need to be accessed through authenticated token in bearer header. Check postman collection for sample requests.
 

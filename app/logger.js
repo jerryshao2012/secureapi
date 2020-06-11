@@ -5,7 +5,7 @@ const config = require('../config');
 
 // Log requests to the console
 //const logger = require('morgan');
-var logger = new winston.Logger({
+var logger = winston.createLogger({
     transports: [
         new winston.transports.File({
             level: process.env.LOG_LEVEL || config.loggerLevel || "info",

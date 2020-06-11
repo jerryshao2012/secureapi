@@ -12,6 +12,7 @@ const logger = require('../app/logger');
 const fs = require('fs');
 const serverJsonFile = './server.json';
 if (!fs.existsSync(serverJsonFile)) {
+    const crypto = require('crypto');
     // Elliptic Curve Diffie-Hellman (ECDH) key exchanges
     var serverKey = crypto.createECDH('secp256k1');
     serverKey.generateKeys();
@@ -23,6 +24,7 @@ if (!fs.existsSync(serverJsonFile)) {
     };
 
     // RSA key
+    var NodeRSA = require('node-rsa');
     var rsaKeyPair = new NodeRSA({b: 1024});
     config.jwt.privateKey = rsaKeyPair.exportKey('pkcs1-private-pem');
     config.jwt.publicKey = rsaKeyPair.exportKey('pkcs1-public-pem');

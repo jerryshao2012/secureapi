@@ -38,6 +38,7 @@
     "node-rsa": "^1.0.8",
     "nodemailer": "^6.4.8",
     "nodemailer-express-handlebars": "^4.0.0",
+    "request": "^2.88.2",
     "swagger-ui-express": "^4.1.4",
     "underscore": "^1.10.2",
     "winston": "^3.2.1"

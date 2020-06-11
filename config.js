@@ -57,8 +57,7 @@ var request = require('request');
 
 module.exports = {
     // Database URL
-    //database: "mongodb://localhost:27017/secureapi",
-    database: "mongodb+srv://atlasAdmin:iyACoBCHPgyc9zRR@cluster0-wuxjz.azure.mongodb.net/secureapi?retryWrites=true&w=majority",
+    database: "mongodb://localhost:27017/secureapi",
     // Log level & format
     // combined: Standard Apache combined log output.
     // :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"

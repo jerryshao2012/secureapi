@@ -46,7 +46,9 @@ const app = new express();
 app.use(require("morgan")(config.logFormat, {stream: logger.stream}));
 
 // Connect to database
-mongoose.connect(config.database, {useNewUrlParser: true}, function (err) {
+if (process.env.MONGODB_URL) config.database = process.env.MONGODB_URL;
+logger.info("Cdatabase=" + config.database);
+mongoose.connect(config.database, {useNewUrlParser: true, useUnifiedTopology: true}, function (err) {
     if (err === null) {
         logger.info("Connected successfully to mongo database server on startup");
 

@@ -53,6 +53,8 @@ function normalizePort(val) {
     return false;
 }
 
+var request = require('request');
+
 module.exports = {
     // Database URL
     //database: "mongodb://localhost:27017/secureapi",

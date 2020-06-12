@@ -19,7 +19,7 @@ cron.schedule('0 */2 * * *', function () {
     logger.debug(new Date() + ': running a clean session task');
 
     var createdAt = new Date(Date.now() - 1000 * 60 * 60);
-    Session.count({createdAt: {"$lt": createdAt}}, function (err, count) {
+    Session.estimatedDocumentCount({createdAt: {"$lt": createdAt}}, function (err, count) {
         logger.debug("Number of session(s) to verify & clean up: ", count);
 
         if (count > 0) {

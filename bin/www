@@ -7,6 +7,8 @@
 const config = require('../config');
 // App logger framework
 const logger = require('../app/logger');
+// Crypto library
+const crypto = require('crypto');
 
 // Initialize server environment
 const fs = require('fs');
@@ -28,6 +30,8 @@ if (!fs.existsSync(serverJsonFile)) {
     var rsaKeyPair = new NodeRSA({b: 1024});
     config.jwt.privateKey = rsaKeyPair.exportKey('pkcs1-private-pem');
     config.jwt.publicKey = rsaKeyPair.exportKey('pkcs1-public-pem');
+    // Secret for hash
+    config.secret = crypto.randomBytes(32).toString('hex');
 
     // Keep in file
     fs.writeFileSync(serverJsonFile, JSON.stringify({
@@ -41,7 +45,7 @@ if (!fs.existsSync(serverJsonFile)) {
             // RSA Public Key for token
             publicKey: config.jwt.publicKey
         },
-        secret: crypto.randomBytes(32).toString('hex')
+        secret: config.secret
     }));
 
     logger.info("Create configuration=" + JSON.stringify(config));
@@ -64,8 +68,6 @@ const cfenv = require('cfenv');
 const app = require('../app');
 const debug = require('debug')('secureapis:server');
 const http = require('http');
-// Crypto library
-const crypto = require('crypto');
 // Node RSA library
 var NodeRSA = require('node-rsa');
 

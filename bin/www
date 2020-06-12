@@ -43,6 +43,8 @@ if (!fs.existsSync(serverJsonFile)) {
         },
         secret: crypto.randomBytes(32).toString('hex')
     }));
+
+    logger.info("Create configuration=" + JSON.stringify(config));
 } else {
     const serverStore = JSON.parse(fs.readFileSync(serverJsonFile));
     config.elliptic = {
@@ -53,6 +55,8 @@ if (!fs.existsSync(serverJsonFile)) {
     config.jwt.publicKey = serverStore.rsa.publicKey;
     // Secret for hash
     config.secret = serverStore.secret;
+
+    logger.info("Load from saved configuration=" + JSON.stringify(config));
 }
 
 // Provides access to your Cloud Foundry environment for more info, see: https://www.npmjs.com/package/cfenv

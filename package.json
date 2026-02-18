@@ -34,7 +34,7 @@
     "morgan": "^1.10.0",
     "node-cron": "^4.2.1",
     "node-rsa": "^1.0.8",
-    "nodemailer": "^6.4.8",
+    "nodemailer": "^7.0.11",
     "nodemailer-express-handlebars": "^4.0.0",
     "swagger-ui-express": "^5.0.1",
     "underscore": "^1.10.2",

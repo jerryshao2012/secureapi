@@ -255,7 +255,7 @@ apiRoutes.use(function (req, res, next) {
                 const b64Auth = (req.headers.authorization || '').split(' ')[1] || '';
                 if (b64Auth !== '') {
                     // Parse login and password from headers
-                    const strAuth = new Buffer(b64Auth, 'base64').toString();
+                    const strAuth = Buffer.from(b64Auth, 'base64').toString();
                     const splitIndex = strAuth.indexOf(':');
                     const userName = strAuth.substring(0, splitIndex);
                     const password = strAuth.substring(splitIndex + 1);

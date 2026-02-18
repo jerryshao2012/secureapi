@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const cfenv = require('cfenv');
 // Get the app environment from Cloud Foundry
 const appEnv = cfenv.getAppEnv();
+const hashSecret = process.env.HASH_SECRET || process.env.SECRET || 'secureapi-dev-secret';
 
 // Get port from environment and store in Express.
 const port = normalizePort(appEnv.port || process.env.PORT || 3000);
@@ -12,7 +13,7 @@ var host = "http://localhost:" + port;
 var hashData = function (password) {
     if (!password) return '';
 
-    return crypto.createHmac('sha256', this.secret).update(password).digest('base64');
+    return crypto.createHmac('sha256', hashSecret).update(password).digest('base64');
 };
 
 // Sync version of hashing function
@@ -53,8 +54,6 @@ function normalizePort(val) {
     return false;
 }
 
-var request = require('request');
-
 module.exports = {
     // Database URL
     //database: "mongodb://localhost:27017/secureapi",
@@ -72,6 +71,7 @@ module.exports = {
     // :method :url :status :res[content-length] - :response-time ms
     logFormat: "dev",
     loggerLevel: "debug",
+    secret: hashSecret,
     jwt: {
         // Issuer for token
         issuer: "secure.api",

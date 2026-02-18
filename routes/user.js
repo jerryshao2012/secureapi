@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 // Get our config file
 const config = require('../config');
+// App logger framework
+const logger = require('../app/logger');
 
 const User = require('../app/models/user');
 

@@ -510,22 +510,16 @@ webRoutes.delete('/user', function (req, res) {
     }
 });
 
-// Catch 401
-webRoutes.get('*', function (req, res) {
-    logger.error("401: " + req.originalUrl);
-    res.redirect('/');
-});
-
 // Catch 404
 webRoutes.get('*', function (req, res) {
     logger.error("404: " + req.originalUrl);
-    res.render('404', {title: 'Page Not Found'});
+    res.status(404).render('404', {title: 'Page Not Found'});
 });
 
 // Application encounters an error
-webRoutes.get('*', function (err, req, res, next) {
+webRoutes.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    logger.error(err.status + ": " + req.originalUrl + '\n' + e.stack);
+    logger.error((err.status || 500) + ": " + req.originalUrl + '\n' + (err.stack || err));
     res.render('500', {title: 'System Error'});
 });
 

@@ -1,175 +1,101 @@
 const assert = require('assert');
-const postman = require("../secure.APIs.postman.collection.json");
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const _ = require('underscore');
-//var server = require('../bin/www');
+const contextMatcher = require('../lib/reverse-proxy-libs/context-matcher');
+const pathRewriter = require('../lib/reverse-proxy-libs/path-rewriter');
+const router = require('../lib/reverse-proxy-libs/router');
+const config = require('../config');
 
-chai.use(chaiHttp);
+describe('config.hash', function () {
+    it('returns an empty string for falsy input', function () {
+        assert.strictEqual(config.hash(), '');
+        assert.strictEqual(config.hash(''), '');
+    });
 
-function generateHost(url) {
-    return url.protocol + "://" + url.host.join(".") + ":" + url.port;
-}
-
-function generatePath(array) {
-    return "/" + array.join("/");
-}
-
-function generateBody(array) {
-    return _.map(array, function (item) {
-        return item.key + "=" + encodeURI(item.value);
-    }).join("&")
-}
-
-var api = postman.item.find(function (item) {
-    return item.name === 'Login';
-});
-describe(api.name, function () {
-    it(api.name + ' done', function (done) {
-        chai.request(generateHost(api.request.url))
-            .post(generatePath(api.request.url.path))
-            .type('form')
-            .send(generateBody(api.request.body.urlencoded))
-            .end(function (err, res) {
-                if (err) done(err);
-                assert.equal(res.status, 201);
-                assert.equal(res.body.success, true);
-                assert.equal(res.body.message, "Authentication successful");
-                assert.ok(res.body.token, "Found authentication token");
-                var token = res.body.token;
-                done();
-
-                var api = postman.item.find(function (item) {
-                    return item.name === 'Remove a User';
-                });
-                describe("Clean up: " + api.name, function () {
-                    it(api.name + ' done', function (done) {
-                        chai.request(generateHost(api.request.url))
-                            .delete(generatePath(api.request.url.path))
-                            .set('Authorization', 'Bearer ' + token)
-                            .type('form')
-                            .send(generateBody(api.request.body.urlencoded))
-                            .end(function () {
-                                // Ignore error
-                                done();
-
-                                var api = postman.item.find(function (item) {
-                                    return item.name === 'Create a User';
-                                });
-                                describe(api.name, function () {
-                                    it(api.name + ' done', function (done) {
-                                        chai.request(generateHost(api.request.url))
-                                            .post(generatePath(api.request.url.path))
-                                            .set('Authorization', 'Bearer ' + token)
-                                            .type('form')
-                                            .send(generateBody(api.request.body.urlencoded))
-                                            .end(function (err, res) {
-                                                if (err) done(err);
-                                                assert.equal(res.status, 201);
-                                                assert.equal(res.body.success, true);
-                                                assert.equal(res.body.message, "User created successfully");
-
-                                                done();
-
-                                                var api = postman.item.find(function (item) {
-                                                    return item.name === 'Update a User';
-                                                });
-                                                describe(api.name, function () {
-                                                    it(api.name + ' done', function (done) {
-                                                        chai.request(generateHost(api.request.url))
-                                                            .put(generatePath(api.request.url.path))
-                                                            .set('Authorization', 'Bearer ' + token)
-                                                            .type('form')
-                                                            .send(generateBody(api.request.body.urlencoded))
-                                                            .end(function (err, res) {
-                                                                if (err) done(err);
-                                                                assert.equal(res.status, 200);
-                                                                assert.equal(res.body.success, true);
-                                                                assert.equal(res.body.message, "User updated successfully");
-
-                                                                done();
-
-                                                                var api = postman.item.find(function (item) {
-                                                                    return item.name === 'Get a User';
-                                                                });
-                                                                describe(api.name, function () {
-                                                                    it(api.name + ' done', function (done) {
-                                                                        chai.request(generateHost(api.request.url))
-                                                                            .get(generatePath(api.request.url.path))
-                                                                            .set('Authorization', 'Bearer ' + token)
-                                                                            .end(function (err, res) {
-                                                                                if (err) done(err);
-                                                                                assert.equal(res.status, 200);
-                                                                                assert.equal(res.body.success, true);
-                                                                                assert.ok(res.body.user, "User found");
-
-                                                                                done();
-
-                                                                                var api = postman.item.find(function (item) {
-                                                                                    return item.name === 'Remove a User';
-                                                                                });
-                                                                                describe(api.name, function () {
-                                                                                    it(api.name + ' done', function (done) {
-                                                                                        chai.request(generateHost(api.request.url))
-                                                                                            .delete(generatePath(api.request.url.path))
-                                                                                            .set('Authorization', 'Bearer ' + token)
-                                                                                            .type('form')
-                                                                                            .send(generateBody(api.request.body.urlencoded))
-                                                                                            .end(function (err, res) {
-                                                                                                if (err) done(err);
-                                                                                                assert.equal(res.status, 200);
-                                                                                                assert.equal(res.body.success, true);
-                                                                                                assert.equal(res.body.message, "User deleted successfully");
-
-                                                                                                done();
-
-                                                                                                var api = postman.item.find(function (item) {
-                                                                                                    return item.name === 'Logoff';
-                                                                                                });
-                                                                                                describe(api.name, function () {
-                                                                                                    it(api.name + ' done', function (done) {
-                                                                                                        chai.request(generateHost(api.request.url))
-                                                                                                            .get(generatePath(api.request.url.path))
-                                                                                                            .set('Authorization', 'Bearer ' + token)
-                                                                                                            .end(function (err, res) {
-                                                                                                                if (err) done(err);
-                                                                                                                assert.equal(res.status, 200);
-                                                                                                                assert.equal(res.body.success, true);
-                                                                                                                assert.equal(res.body.message, "Logoff successful");
-                                                                                                                done();
-                                                                                                            });
-                                                                                                    });
-                                                                                                });
-                                                                                            });
-                                                                                    });
-                                                                                });
-                                                                            });
-                                                                    });
-                                                                });
-                                                            });
-                                                    });
-                                                });
-                                            });
-                                    });
-                                });
-                            });
-                    });
-                });
-            });
+    it('is deterministic for the same input', function () {
+        const one = config.hash('password123');
+        const two = config.hash('password123');
+        assert.strictEqual(one, two);
     });
 });
 
-var certApi = postman.item.find(function (item) {
-    return item.name === 'API Cert';
+describe('context-matcher', function () {
+    it('matches a single prefix path', function () {
+        assert.strictEqual(contextMatcher.match('/api', '/api/v1/users'), true);
+        assert.strictEqual(contextMatcher.match('/api', '/web/home'), false);
+    });
+
+    it('matches array path contexts', function () {
+        assert.strictEqual(contextMatcher.match(['/web', '/api'], '/api/v1/users'), true);
+        assert.strictEqual(contextMatcher.match(['/web', '/admin'], '/api/v1/users'), false);
+    });
+
+    it('matches glob paths', function () {
+        assert.strictEqual(contextMatcher.match('/api/**', '/api/v1/users'), true);
+        assert.strictEqual(contextMatcher.match('/api/**', '/web/v1/users'), false);
+    });
+
+    it('supports function contexts', function () {
+        const fn = function (pathname) {
+            return pathname === '/exact';
+        };
+        assert.strictEqual(contextMatcher.match(fn, '/exact', {}), true);
+        assert.strictEqual(contextMatcher.match(fn, '/other', {}), false);
+    });
+
+    it('throws for mixed invalid context arrays', function () {
+        assert.throws(function () {
+            contextMatcher.match(['/api/**', '/plain'], '/api/v1/users');
+        }, /Invalid context/);
+    });
 });
-describe(certApi.name, function () {
-    it(certApi.name + ' done', function (done) {
-        chai.request(generateHost(certApi.request.url))
-            .get(generatePath(certApi.request.url.path))
-            .end(function (err, res) {
-                assert.equal(err, null);
-                assert.equal(res.status, 200);
-                done();
-            });
+
+describe('path-rewriter', function () {
+    it('returns null when config is empty', function () {
+        assert.strictEqual(pathRewriter.create({}), null);
+        assert.strictEqual(pathRewriter.create(), null);
+    });
+
+    it('rewrites path using first matching rule', function () {
+        const rewrite = pathRewriter.create({
+            '^/api/v1': '/v1',
+            '^/api': '/root'
+        });
+
+        assert.strictEqual(rewrite('/api/v1/users'), '/v1/users');
+        assert.strictEqual(rewrite('/api/metrics'), '/root/metrics');
+    });
+
+    it('returns function config as-is', function () {
+        const fn = function (path) {
+            return path.toUpperCase();
+        };
+        assert.strictEqual(pathRewriter.create(fn), fn);
+    });
+});
+
+describe('router.getTarget', function () {
+    it('matches exact host in router table', function () {
+        const req = {
+            headers: {host: 'dev.localhost:3000'},
+            url: '/dashboard'
+        };
+        const target = router.getTarget(req, {
+            router: {
+                'dev.localhost:3000': 'http://localhost:8000'
+            }
+        });
+        assert.strictEqual(target, 'http://localhost:8000');
+    });
+
+    it('matches host and path key in router table', function () {
+        const req = {
+            headers: {host: 'dev.localhost:3000'},
+            url: '/api/v2/dashboard'
+        };
+        const target = router.getTarget(req, {
+            router: {
+                'dev.localhost:3000/api/v2': 'http://localhost:9000'
+            }
+        });
+        assert.strictEqual(target, 'http://localhost:9000');
     });
 });

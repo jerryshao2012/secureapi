@@ -1,8 +1,17 @@
 # node-secure-api
 The secure api library provides a set of security APIs for enrollment, authentication and authorization.
 
+## Prerequisites
+- Node.js 20+ (project currently validated with modern Node runtime)
+- MongoDB (local or remote)
+
 ## Usage
-### `node bin/www`
+### Install dependencies
+```bash
+npm install
+```
+
+### `npm start`
 
 Start secure API services. A default admin account will be created if it is not existing.
 
@@ -15,6 +24,12 @@ Secure API is using MongoDB. MongoDB configuration is defined in root/config.js.
 // Database URL
 database: "mongodb://localhost:27017/secureapi"
 ````
+Hashing secret can be configured through environment variable:
+```bash
+HASH_SECRET=your-secret-value
+```
+If not provided, the app uses a development fallback secret.
+
 Session timeout: please check [JSON Web Tokens](https://github.com/auth0/node-jsonwebtoken)
 ````
 // Expires in 24 hours
@@ -113,15 +128,18 @@ level3: {
 Postman collection is located in root/secure.APIs.postman.collection.json.
 
 ## Testing
-Integrated with postman collection, mocha, chai, chai-http. After install Mocha:
-````
-npm install mocha chai chai-http --save-dev
-
-````
-Just run:
-````
+Unit tests are implemented with Mocha and focus on deterministic local behavior (no external network/API dependency).
+Run:
+```bash
 npm test
-````
+```
+
+Current unit test scope includes:
+- hashing behavior in `config.js`
+- reverse-proxy context matching (`lib/reverse-proxy-libs/context-matcher.js`)
+- reverse-proxy path rewriting (`lib/reverse-proxy-libs/path-rewriter.js`)
+- reverse-proxy target routing (`lib/reverse-proxy-libs/router.js`)
+
 ## API documentation
 
 * Swagger 2 standard API documentation can be accessed at /api/v1/api-docs such as localhost:6002/api/v1/api-docs if server is launched on port 6002 locally. The link is protected by default admin account.
@@ -200,8 +218,6 @@ Sample configurations show how to reverse proxy https://www.google.com and http:
 * [morgan](https://github.com/expressjs/morgan) HTTP request logger middleware for node.js
 * [winston](https://github.com/winstonjs/winston) a logger for just about everything
 * [Mocha](https://mochajs.org) a feature-rich JavaScript test framework running on Node.js and in the browser, making asynchronous testing simple and fun. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught exceptions to the correct test cases.
-* [Chai](http://www.chaijs.com) a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework
-* [Chai HTTP](https://github.com/chaijs/chai-http) HTTP integration testing with Chai assertions
 * [express-session](https://github.com/expressjs/session) Express session middleware
 * [connect-mongodb-session](https://github.com/mongodb-js/connect-mongodb-session) Use to store express web sessions in MongoDB
 * [Nodemailer](https://github.com/nodemailer/nodemailer) Send e-mails with Node.JS

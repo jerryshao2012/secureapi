@@ -10,8 +10,6 @@ var MongoWebSessionStore = require('connect-mongodb-session')(webSession);
 const path = require('path');
 // Get cookies from our requests
 const cookieParser = require('cookie-parser');
-// Get parameters from our POST requests
-const bodyParser = require('body-parser');
 // Interact with our MongoDB database
 const mongoose = require('mongoose');
 const assert = require('assert');
@@ -20,7 +18,7 @@ const jwt = require('jsonwebtoken');
 // App logger framework
 const logger = require('./app/logger');
 // Launch cron jobs
-new require('./app/job');
+require('./app/job');
 // Reverse proxy
 const junction = require('./routes/junction');
 
@@ -40,7 +38,7 @@ const userRouter = require('./routes/user');
 const publicApiRouters = require('./routes/api');
 const otherRouter = require('./routes/other');
 
-const app = new express();
+const app = express();
 
 // Use morgan and winston together
 app.use(require("morgan")(config.logFormat, {stream: logger.stream}));
@@ -80,10 +78,6 @@ mongoose.connect(config.database, {useNewUrlParser: true, useUnifiedTopology: tr
 
 // Use cookie parser so we can get cookie from request
 app.use(cookieParser());
-// Use body parser so we can get info from POST and/or URL parameters
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -159,7 +153,7 @@ app.use(function (req, res, next) {
 
 var env = process.env.NODE_ENV || 'development';
 // Error handler
-app.use(function (err, req, res) {
+app.use(function (err, req, res, next) {
     // Set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = env === 'development' ? err : {};

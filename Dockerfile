@@ -1,13 +1,15 @@
-FROM node:9-alpine
+FROM node:20-alpine
 
-ENV PORT 3001
+WORKDIR /app
 
-EXPOSE 3001
+ENV NODE_ENV=production
+ENV PORT=3001
 
-COPY package.json package.json
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --no-audit --no-fund
 
 COPY . .
-RUN npm run build
+
+EXPOSE 3001
 
 CMD ["npm", "start"]

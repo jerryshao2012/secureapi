@@ -37,7 +37,7 @@
     "nodemailer": "^6.4.8",
     "nodemailer-express-handlebars": "^4.0.0",
     "swagger-ui-express": "^5.0.1",
-    "underscore": "^1.10.2",
+    "underscore": "^1.13.8",
     "winston": "^3.2.1"
   },
   "devDependencies": {

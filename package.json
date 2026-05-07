@@ -30,7 +30,7 @@
     "jsonwebtoken": "^9.0.3",
     "lodash": "^4.17.15",
     "micromatch": "^4.0.2",
-    "mongoose": "^5.9.18",
+    "mongoose": "^6.13.9",
     "morgan": "^1.10.0",
     "node-cron": "^4.2.1",
     "node-rsa": "^1.0.8",
